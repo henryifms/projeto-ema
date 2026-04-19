@@ -2,28 +2,10 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import HourlyForecast from "../components/HourlyForecast";
 import type { DadoPrevisao } from "../components/HourlyForecast";
-import { FaGithub, FaLinkedin, FaTimes, FaGraduationCap } from "react-icons/fa";
+import { FaGithub, FaTimes } from "react-icons/fa";
 import logoIcon from "../assets/icone.png";
 import Map from "../components/Map";
 import PlanoPesquisa from "../components/PlanoPesquisa";
-
-// Dados dos executores (substitua pelos dados reais)
-const integrantes = [
-  {
-    nome: "Henry Campos",
-    funcao: "Desenvolvedor Full-Stack e Pesquisador",
-    github: "https://github.com/henryifms",
-    linkedin: "https://linkedin.com/in/henrycampos",
-    lattes: "http://lattes.cnpq.br/0000000000000000",
-  },
-  {
-    nome: "Alvaro Silva",
-    funcao: "Coordenador de Dados e Infraestrutura",
-    github: "https://github.com/alvaroifms",
-    linkedin: "https://linkedin.com/in/alvarosilva",
-    lattes: "http://lattes.cnpq.br/1111111111111111",
-  },
-];
 
 const Home = () => {
   const [openPDF, setOpenPDF] = useState(false);

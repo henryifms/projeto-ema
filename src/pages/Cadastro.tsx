@@ -120,7 +120,7 @@ const Cadastro = () => {
           <ReCAPTCHA
   ref={recaptchaRef}
   sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // use variável de ambiente
-  onChange={(token) => setCaptchaToken(token)}
+  onChange={(token: string | null) => setCaptchaToken(token)}
   onExpired={() => setCaptchaToken(null)}
 />
 

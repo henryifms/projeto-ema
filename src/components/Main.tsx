@@ -23,7 +23,7 @@ import {
 import type { LeiturasFilters } from "./FiltersPanel";
 import TableLeituras from "./TableLeituras";
 import Map from "./Map";
-import { jwtDecode } from "jwt-decode"; // adicione esta dependência
+import { jwtDecode } from "jwt-decode";
 
 export interface Leitura {
   id: string;
@@ -59,7 +59,7 @@ export interface EstacaoResumo {
     type?: string;
     coordinates: [number, number];
   };
-  usuario_proprietario_id: number; // importante para comparação
+  usuario_proprietario_id: number;
   proprietario?: {
     id: number;
     nome: string;
@@ -184,7 +184,6 @@ function buildOverlaySeries(base: Leitura[], selectedStations: EstacaoResumo[], 
   );
 }
 
-// Hook para obter o ID do usuário a partir do token JWT
 function useCurrentUserId() {
   const [userId, setUserId] = useState<number | null>(null);
   useEffect(() => {
@@ -290,7 +289,15 @@ function useLeituras(estacaoId?: string) {
   return { filters, setFilters, queryState, setQueryState, leituras, rawResponse, loading };
 }
 
-function SmallFiltersPanel({ filters, queryState, onChangeFilters, onChangeQueryState, onReset }: any) {
+interface SmallFiltersPanelProps {
+  filters: LeiturasFilters;
+  queryState: QueryState;
+  onChangeFilters: (fn: (prev: LeiturasFilters) => LeiturasFilters) => void;
+  onChangeQueryState: (fn: (prev: QueryState) => QueryState) => void;
+  onReset: () => void;
+}
+
+function SmallFiltersPanel({ filters, queryState, onChangeFilters, onChangeQueryState, onReset }: SmallFiltersPanelProps) {
   const inputClass = "w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100";
   return (
     <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-md">
@@ -303,11 +310,11 @@ function SmallFiltersPanel({ filters, queryState, onChangeFilters, onChangeQuery
       </div>
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
-          <input className={inputClass} type="datetime-local" value={filters.criadaDepois} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, criadaDepois: e.target.value }))} />
-          <input className={inputClass} type="datetime-local" value={filters.criadaAntes} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, criadaAntes: e.target.value }))} />
+          <input className={inputClass} type="datetime-local" value={filters.criadaDepois} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, criadaDepois: e.target.value }))} />
+          <input className={inputClass} type="datetime-local" value={filters.criadaAntes} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, criadaAntes: e.target.value }))} />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <select className={inputClass} value={queryState.sort} onChange={(e) => onChangeQueryState((prev: any) => ({ ...prev, sort: e.target.value, page: 1 }))}>
+          <select className={inputClass} value={queryState.sort} onChange={(e) => onChangeQueryState((prev: QueryState) => ({ ...prev, sort: e.target.value, page: 1 }))}>
             <option value="data_leitura:desc">Mais recentes</option>
             <option value="data_leitura:asc">Mais antigas</option>
             <option value="temperatura:desc">Temperatura desc</option>
@@ -315,34 +322,48 @@ function SmallFiltersPanel({ filters, queryState, onChangeFilters, onChangeQuery
             <option value="umidade:desc">Umidade desc</option>
             <option value="umidade:asc">Umidade asc</option>
           </select>
-          <select className={inputClass} value={queryState.limit} onChange={(e) => onChangeQueryState((prev: any) => ({ ...prev, limit: Number(e.target.value), page: 1 }))}>
+          <select className={inputClass} value={queryState.limit} onChange={(e) => onChangeQueryState((prev: QueryState) => ({ ...prev, limit: Number(e.target.value), page: 1 }))}>
             <option value={10}>10 linhas</option>
             <option value={20}>20 linhas</option>
             <option value={50}>50 linhas</option>
           </select>
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <input className={inputClass} type="number" placeholder="Temp min" value={filters.temperatura_min} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, temperatura_min: e.target.value }))} />
-          <input className={inputClass} type="number" placeholder="Temp max" value={filters.temperatura_max} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, temperatura_max: e.target.value }))} />
+          <input className={inputClass} type="number" placeholder="Temp min" value={filters.temperatura_min} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, temperatura_min: e.target.value }))} />
+          <input className={inputClass} type="number" placeholder="Temp max" value={filters.temperatura_max} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, temperatura_max: e.target.value }))} />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <input className={inputClass} type="number" placeholder="Umidade min" value={filters.umidade_min} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, umidade_min: e.target.value }))} />
-          <input className={inputClass} type="number" placeholder="Umidade max" value={filters.umidade_max} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, umidade_max: e.target.value }))} />
+          <input className={inputClass} type="number" placeholder="Umidade min" value={filters.umidade_min} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, umidade_min: e.target.value }))} />
+          <input className={inputClass} type="number" placeholder="Umidade max" value={filters.umidade_max} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, umidade_max: e.target.value }))} />
         </div>
         <div className="grid grid-cols-2 gap-3">
-          <input className={inputClass} type="number" placeholder="Precipitação min" value={filters.precipitacao_min} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, precipitacao_min: e.target.value }))} />
-          <input className={inputClass} type="number" placeholder="Precipitação max" value={filters.precipitacao_max} onChange={(e) => onChangeFilters((prev: any) => ({ ...prev, precipitacao_max: e.target.value }))} />
+          <input className={inputClass} type="number" placeholder="Precipitação min" value={filters.precipitacao_min} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, precipitacao_min: e.target.value }))} />
+          <input className={inputClass} type="number" placeholder="Precipitação max" value={filters.precipitacao_max} onChange={(e) => onChangeFilters((prev: LeiturasFilters) => ({ ...prev, precipitacao_max: e.target.value }))} />
         </div>
       </div>
     </section>
   );
 }
 
-function InsightPanel({ estacao, convites, logs, activeTab, onChangeTab, onCreateInvite, onRequestAccess, creatingInvite, inviteError, requestingAccess, accessRequestStatus }: any) {
+interface InsightPanelProps {
+  estacao: EstacaoResumo;
+  convites: Convite[];
+  logs: any[];
+  activeTab: InsightTab;
+  onChangeTab: (tab: InsightTab) => void;
+  onCreateInvite: (email: string) => Promise<void>;
+  onRequestAccess: () => Promise<void>;
+  creatingInvite: boolean;
+  requestingAccess: boolean;
+  accessRequestStatus: string | null;
+  inviteError: string | null;
+}
+
+function InsightPanel({ estacao, convites, logs, activeTab, onChangeTab, onCreateInvite, onRequestAccess, creatingInvite, inviteError, requestingAccess, accessRequestStatus }: InsightPanelProps) {
   const [inviteEmail, setInviteEmail] = useState("");
   const tabClass = (tab: InsightTab) => `rounded-xl px-4 py-2.5 text-sm font-semibold transition ${activeTab === tab ? "bg-green-600 text-white shadow-sm" : "bg-green-50 text-green-700 hover:bg-green-100"}`;
   const statusStyles: Record<string, string> = { PENDENTE: "bg-yellow-100 text-yellow-700", ACEITO: "bg-green-100 text-green-700", REJEITADO: "bg-red-100 text-red-700" };
-  const isOwner = estacao.usuario_proprietario_id === (window as any).__CURRENT_USER_ID__; // será setado no Main
+  const isOwner = estacao.usuario_proprietario_id === (window as any).__CURRENT_USER_ID__;
 
   return (
     <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-md">
@@ -356,7 +377,7 @@ function InsightPanel({ estacao, convites, logs, activeTab, onChangeTab, onCreat
       </div>
       {activeTab === "logs" ? (
         <div className="space-y-3">
-          {logs.length ? logs.map((log) => (
+          {logs.length ? logs.map((log: any) => (
             <article key={log.id} className="rounded-xl border border-gray-100 bg-gray-50 p-4 transition hover:bg-white hover:shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-sm font-semibold text-gray-900">{log.titulo}</p>
@@ -390,7 +411,7 @@ function InsightPanel({ estacao, convites, logs, activeTab, onChangeTab, onCreat
             </div>
           )}
           <div className="space-y-3">
-            {convites.length ? convites.map((invite, index) => (
+            {convites.length ? convites.map((invite: Convite, index: number) => (
               <article key={invite.id || invite.token || index} className="rounded-xl border border-gray-100 bg-gray-50 p-4 transition hover:bg-white hover:shadow-sm">
                 <div className="flex items-start justify-between gap-3">
                   <div>
@@ -410,7 +431,16 @@ function InsightPanel({ estacao, convites, logs, activeTab, onChangeTab, onCreat
   );
 }
 
-function MetricChartPanel({ chartData, overlayData, overlayStations, activeMetric, onMetricChange, loading }: any) {
+interface MetricChartPanelProps {
+  chartData: any[];
+  overlayData: any[];
+  overlayStations: EstacaoResumo[];
+  activeMetric: MetricTab;
+  onMetricChange: (metric: MetricTab) => void;
+  loading: boolean;
+}
+
+function MetricChartPanel({ chartData, overlayData, overlayStations, activeMetric, onMetricChange, loading }: MetricChartPanelProps) {
   const current = metricConfig[activeMetric];
   const metrics = Object.keys(metricConfig) as MetricTab[];
   const lineColors = ["#0f766e", "#0284c7", "#ef4444", "#7c3aed"];
@@ -466,7 +496,7 @@ function MetricChartPanel({ chartData, overlayData, overlayStations, activeMetri
                   <YAxis />
                   <Tooltip labelFormatter={(value) => new Date(String(value)).toLocaleString("pt-BR")} />
                   <Legend />
-                  {overlayStations.map((station: any, index: number) => <Line key={station.id} type="monotone" dataKey={`estacao_${station.id}`} name={station.nome} stroke={lineColors[index % lineColors.length]} strokeWidth={2.2} dot={false} />)}
+                  {overlayStations.map((station: EstacaoResumo, index: number) => <Line key={station.id} type="monotone" dataKey={`estacao_${station.id}`} name={station.nome} stroke={lineColors[index % lineColors.length]} strokeWidth={2.2} dot={false} />)}
                 </LineChart>
               </ResponsiveContainer>
             </div>
@@ -483,7 +513,6 @@ export default function Main() {
   const { filters, setFilters, queryState, setQueryState, leituras, rawResponse, loading: loadingLeituras } = useLeituras(id);
   const currentUserId = useCurrentUserId();
 
-  // Define o ID do usuário atual em uma variável global para uso no InsightPanel (simplificação)
   useEffect(() => {
     if (currentUserId) (window as any).__CURRENT_USER_ID__ = currentUserId;
   }, [currentUserId]);
@@ -523,7 +552,6 @@ export default function Main() {
 
   const handleStationToggle = (stationId: number) => setSelectedStations((prev) => prev.includes(stationId) ? prev.filter((id) => id !== stationId) : [...prev, stationId].slice(-3));
 
-  // Proprietário convida por e‑mail (rota hipotética)
   const handleCreateInvite = async (email: string) => {
     if (!id) { setInviteError("ID da estação não encontrado"); return; }
     if (!email || !email.includes("@")) { setInviteError("Email inválido"); return; }
@@ -532,7 +560,6 @@ export default function Main() {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Não autenticado");
-      // Altere a URL para a rota correta de convite pelo proprietário
       const response = await fetch(`${import.meta.env.VITE_BACK_URL}/estacoes/${id}/convites/convidar`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -552,7 +579,6 @@ export default function Main() {
     }
   };
 
-  // Usuário comum solicita acesso
   const handleRequestAccess = async () => {
     if (!id) { setInviteError("ID da estação não encontrado"); return; }
     setRequestingAccess(true);
@@ -564,16 +590,14 @@ export default function Main() {
       const response = await fetch(`${import.meta.env.VITE_BACK_URL}/estacoes/${id}/convites`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        // sem body, o backend pega o usuário do token
       });
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         if (response.status === 409) throw new Error("Você já solicitou acesso a esta estação.");
         throw new Error(errorData.erro || `Erro ${response.status}`);
       }
-      const created = await response.json();
+      await response.json();
       setAccessRequestStatus("Pedido enviado! Aguarde a aprovação do proprietário.");
-      // Opcional: adicionar o convite à lista local (mas o usuário comum não vê a lista completa)
     } catch (err: any) {
       setInviteError(err.message);
     } finally {
