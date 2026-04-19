@@ -1,4 +1,4 @@
-import type { Leitura } from "./Main";
+import type { Leitura } from "./Main/types";
 
 interface QueryState {
   page: number;
@@ -8,7 +8,7 @@ interface QueryState {
 
 interface TableLeiturasProps {
   leituras: Leitura[];
-  rawResponse: any;
+  rawResponse: any; // Você pode melhorar isso depois
   queryState: QueryState;
   onChangeQueryState: React.Dispatch<React.SetStateAction<QueryState>>;
 }
@@ -104,4 +104,3 @@ export default function TableLeituras({
     </section>
   );
 }
-
