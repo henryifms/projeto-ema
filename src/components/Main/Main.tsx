@@ -16,14 +16,30 @@ import type { MetricTab, NearestStationInfo, LogEntry } from "./types";
 
 export default function Main() {
   const { id } = useParams();
-  const { estacao, ultimaLeitura, todasEstacoes, convites, setConvites, loading, error } =
-    useEstacao(id);
-  const { filters, setFilters, queryState, setQueryState, leituras, rawResponse, loading: loadingLeituras } =
-    useLeituras(id);
+  const {
+    estacao,
+    ultimaLeitura,
+    todasEstacoes,
+    convites,
+    setConvites,
+    loading,
+    error,
+  } = useEstacao(id);
+  const {
+    filters,
+    setFilters,
+    queryState,
+    setQueryState,
+    leituras,
+    rawResponse,
+    loading: loadingLeituras,
+  } = useLeituras(id);
   const currentUserId = useCurrentUserId();
 
   const [selectedStations, setSelectedStations] = useState<number[]>([]);
-  const [nearestInfo, setNearestInfo] = useState<NearestStationInfo | null>(null);
+  const [nearestInfo, setNearestInfo] = useState<NearestStationInfo | null>(
+    null,
+  );
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [insightTab, setInsightTab] = useState<"logs" | "convites">("logs");
   const [activeMetric, setActiveMetric] = useState<MetricTab>("temperatura");
@@ -31,10 +47,14 @@ export default function Main() {
   const [creatingInvite, setCreatingInvite] = useState(false);
   const [inviteError, setInviteError] = useState<string | null>(null);
   const [requestingAccess, setRequestingAccess] = useState(false);
-  const [accessRequestStatus, setAccessRequestStatus] = useState<string | null>(null);
+  const [accessRequestStatus, setAccessRequestStatus] = useState<string | null>(
+    null,
+  );
 
   useEffect(() => {
-    if (currentUserId) (window as { __CURRENT_USER_ID__?: number }).__CURRENT_USER_ID__ = currentUserId;
+    if (currentUserId)
+      (window as { __CURRENT_USER_ID__?: number }).__CURRENT_USER_ID__ =
+        currentUserId;
   }, [currentUserId]);
 
   useEffect(() => {
@@ -45,7 +65,7 @@ export default function Main() {
         tipo: "LEITURA",
         titulo: "Nova leitura registrada",
         descricao: `Temperatura ${formatNumber(ultimaLeitura.temperatura)}°C às ${formatDate(
-          ultimaLeitura.data_leitura
+          ultimaLeitura.data_leitura,
         )}`,
       },
       {
@@ -61,21 +81,30 @@ export default function Main() {
         id: 3,
         tipo: "SISTEMA",
         titulo: "Sincronização concluída",
-        descricao: "Leituras e contexto espacial carregados para a estação atual.",
+        descricao:
+          "Leituras e contexto espacial carregados para a estação atual.",
       },
     ]);
   }, [estacao, ultimaLeitura]);
 
   const selectedStationObjects = useMemo(
-    () => todasEstacoes.filter((station) => selectedStations.includes(station.id) && station.id !== Number(id)),
-    [todasEstacoes, selectedStations, id]
+    () =>
+      todasEstacoes.filter(
+        (station) =>
+          selectedStations.includes(station.id) && station.id !== Number(id),
+      ),
+    [todasEstacoes, selectedStations, id],
   );
-  
+
   const chartData = useMemo(
     () =>
       leituras
         .slice()
-        .sort((a, b) => new Date(a.data_leitura).getTime() - new Date(b.data_leitura).getTime())
+        .sort(
+          (a, b) =>
+            new Date(a.data_leitura).getTime() -
+            new Date(b.data_leitura).getTime(),
+        )
         .map((item) => ({
           ...item,
           timestampLabel: new Date(item.data_leitura).toLocaleString("pt-BR", {
@@ -85,12 +114,12 @@ export default function Main() {
             minute: "2-digit",
           }),
         })),
-    [leituras]
+    [leituras],
   );
-  
+
   const overlayData = useMemo(
     () => buildOverlaySeries(leituras, selectedStationObjects, activeMetric),
-    [leituras, selectedStationObjects, activeMetric]
+    [leituras, selectedStationObjects, activeMetric],
   );
 
   const handleFindNearest = async () => {
@@ -104,15 +133,17 @@ export default function Main() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     );
-    const data = await res.json() as NearestStationInfo;
+    const data = (await res.json()) as NearestStationInfo;
     setNearestInfo(data);
   };
 
   const handleStationToggle = (stationId: number) =>
     setSelectedStations((prev) =>
-      prev.includes(stationId) ? prev.filter((id) => id !== stationId) : [...prev, stationId].slice(-3)
+      prev.includes(stationId)
+        ? prev.filter((id) => id !== stationId)
+        : [...prev, stationId].slice(-3),
     );
 
   const handleCreateInvite = async (email: string) => {
@@ -129,16 +160,21 @@ export default function Main() {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Não autenticado");
-      const response = await fetch(`${import.meta.env.VITE_BACK_URL}/estacoes/${id}/convites/convidar`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_BACK_URL}/estacoes/${id}/convites/convidar`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ email }),
         },
-        body: JSON.stringify({ email }),
-      });
+      );
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({} as { erro?: string }));
+        const errorData = await response
+          .json()
+          .catch(() => ({}) as { erro?: string });
         throw new Error(errorData.erro || `Erro ${response.status}`);
       }
       const created = await response.json();
@@ -162,20 +198,26 @@ export default function Main() {
     try {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Não autenticado");
-      const response = await fetch(`${import.meta.env.VITE_BACK_URL}/estacoes/${id}/convites`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `${import.meta.env.VITE_BACK_URL}/estacoes/${id}/convites`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        if (response.status === 409) throw new Error("Você já solicitou acesso a esta estação.");
+        if (response.status === 409)
+          throw new Error("Você já solicitou acesso a esta estação.");
         throw new Error(errorData.erro || `Erro ${response.status}`);
       }
       await response.json();
-      setAccessRequestStatus("Pedido enviado! Aguarde a aprovação do proprietário.");
+      setAccessRequestStatus(
+        "Pedido enviado! Aguarde a aprovação do proprietário.",
+      );
     } catch (err: any) {
       setInviteError(err.message);
     } finally {
@@ -189,7 +231,7 @@ export default function Main() {
         <div className="h-14 w-14 animate-spin rounded-full border-4 border-gray-200 border-t-green-600" />
       </div>
     );
-  
+
   if (error || !estacao)
     return (
       <div className="rounded-2xl border border-red-200 bg-red-50 p-8 text-red-700">
@@ -206,7 +248,7 @@ export default function Main() {
         equipeCount={estacao.equipe?.length ?? 0}
         convitesCount={convites.length}
       />
-      
+
       <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-md">
         <div className="grid grid-cols-1 gap-6 2xl:grid-cols-[1.35fr_0.65fr]">
           <MapSection
@@ -217,7 +259,7 @@ export default function Main() {
             onFindNearest={handleFindNearest}
             nearestInfo={nearestInfo}
           />
-          
+
           <InsightPanel
             estacao={estacao}
             convites={convites}
@@ -233,7 +275,7 @@ export default function Main() {
           />
         </div>
       </section>
-      
+
       <section className="grid grid-cols-1 gap-8 2xl:grid-cols-[0.62fr_1.38fr]">
         <div className="space-y-6">
           <SmallFiltersPanel
@@ -261,7 +303,7 @@ export default function Main() {
           />
           <StationInfo estacao={estacao} ultimaLeitura={ultimaLeitura} />
         </div>
-        
+
         <MetricChartPanel
           chartData={chartData}
           overlayData={overlayData}
@@ -271,7 +313,7 @@ export default function Main() {
           loading={loadingLeituras}
         />
       </section>
-      
+
       <TableLeituras
         leituras={leituras}
         rawResponse={rawResponse}

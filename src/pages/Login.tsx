@@ -36,7 +36,7 @@ const Login = () => {
           headers: {
             Authorization: `Bearer ${data.token}`,
           },
-        }
+        },
       );
 
       const dataEstacoes = await resEstacoes.json();
@@ -68,7 +68,9 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-green-50 to-blue-50 font-sans">
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl border border-gray-200">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-green-600 tracking-tight">EMA</h1>
+          <h1 className="text-3xl font-bold text-green-600 tracking-tight">
+            EMA
+          </h1>
           <p className="text-sm text-gray-500">Monitoramento Meteorológico</p>
         </div>
 
@@ -108,7 +110,10 @@ const Login = () => {
 
           <p className="text-sm text-gray-500 text-center">
             Ainda não tem conta?{" "}
-            <Link to="/cadastro" className="text-blue-500 font-medium hover:underline">
+            <Link
+              to="/cadastro"
+              className="text-blue-500 font-medium hover:underline"
+            >
               Cadastrar
             </Link>
           </p>

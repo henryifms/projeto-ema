@@ -52,14 +52,18 @@ function NumberRange({
           type="number"
           placeholder="Min"
           value={filters[minKey]}
-          onChange={(e) => onChange((prev) => ({ ...prev, [minKey]: e.target.value }))}
+          onChange={(e) =>
+            onChange((prev) => ({ ...prev, [minKey]: e.target.value }))
+          }
         />
         <input
           className={inputClass}
           type="number"
           placeholder="Max"
           value={filters[maxKey]}
-          onChange={(e) => onChange((prev) => ({ ...prev, [maxKey]: e.target.value }))}
+          onChange={(e) =>
+            onChange((prev) => ({ ...prev, [maxKey]: e.target.value }))
+          }
         />
       </div>
     </div>
@@ -77,8 +81,13 @@ export default function FiltersPanel({
     <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
       <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h2 className="text-xl font-semibold text-slate-950">Filtros avançados</h2>
-          <p className="mt-1 text-sm text-slate-500">Os controles abaixo refletem diretamente os parâmetros de GET /estacoes/:id/leituras.</p>
+          <h2 className="text-xl font-semibold text-slate-950">
+            Filtros avançados
+          </h2>
+          <p className="mt-1 text-sm text-slate-500">
+            Os controles abaixo refletem diretamente os parâmetros de GET
+            /estacoes/:id/leituras.
+          </p>
         </div>
         <button
           onClick={onReset}
@@ -90,30 +99,50 @@ export default function FiltersPanel({
 
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-2">
         <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-          <p className="mb-3 text-sm font-semibold text-slate-900">Intervalo de datas</p>
+          <p className="mb-3 text-sm font-semibold text-slate-900">
+            Intervalo de datas
+          </p>
           <div className="grid grid-cols-2 gap-3">
             <input
               className={inputClass}
               type="datetime-local"
               value={filters.criadaDepois}
-              onChange={(e) => onChangeFilters((prev) => ({ ...prev, criadaDepois: e.target.value }))}
+              onChange={(e) =>
+                onChangeFilters((prev) => ({
+                  ...prev,
+                  criadaDepois: e.target.value,
+                }))
+              }
             />
             <input
               className={inputClass}
               type="datetime-local"
               value={filters.criadaAntes}
-              onChange={(e) => onChangeFilters((prev) => ({ ...prev, criadaAntes: e.target.value }))}
+              onChange={(e) =>
+                onChangeFilters((prev) => ({
+                  ...prev,
+                  criadaAntes: e.target.value,
+                }))
+              }
             />
           </div>
         </div>
 
         <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-          <p className="mb-3 text-sm font-semibold text-slate-900">Ordenação e paginação</p>
+          <p className="mb-3 text-sm font-semibold text-slate-900">
+            Ordenação e paginação
+          </p>
           <div className="grid grid-cols-2 gap-3">
             <select
               className={inputClass}
               value={queryState.sort}
-              onChange={(e) => onChangeQueryState((prev) => ({ ...prev, sort: e.target.value, page: 1 }))}
+              onChange={(e) =>
+                onChangeQueryState((prev) => ({
+                  ...prev,
+                  sort: e.target.value,
+                  page: 1,
+                }))
+              }
             >
               <option value="data_leitura:desc">Mais recentes</option>
               <option value="data_leitura:asc">Mais antigas</option>
@@ -125,7 +154,13 @@ export default function FiltersPanel({
             <select
               className={inputClass}
               value={queryState.limit}
-              onChange={(e) => onChangeQueryState((prev) => ({ ...prev, limit: Number(e.target.value), page: 1 }))}
+              onChange={(e) =>
+                onChangeQueryState((prev) => ({
+                  ...prev,
+                  limit: Number(e.target.value),
+                  page: 1,
+                }))
+              }
             >
               <option value={10}>10 linhas</option>
               <option value={20}>20 linhas</option>
@@ -134,13 +169,42 @@ export default function FiltersPanel({
           </div>
         </div>
 
-        <NumberRange label="Temperatura" minKey="temperatura_min" maxKey="temperatura_max" filters={filters} onChange={onChangeFilters} />
-        <NumberRange label="Umidade" minKey="umidade_min" maxKey="umidade_max" filters={filters} onChange={onChangeFilters} />
-        <NumberRange label="Pressão atmosférica" minKey="pressao_atmosferica_min" maxKey="pressao_atmosferica_max" filters={filters} onChange={onChangeFilters} />
-        <NumberRange label="Velocidade do vento" minKey="velocidade_vento_min" maxKey="velocidade_vento_max" filters={filters} onChange={onChangeFilters} />
-        <NumberRange label="Precipitação" minKey="precipitacao_min" maxKey="precipitacao_max" filters={filters} onChange={onChangeFilters} />
+        <NumberRange
+          label="Temperatura"
+          minKey="temperatura_min"
+          maxKey="temperatura_max"
+          filters={filters}
+          onChange={onChangeFilters}
+        />
+        <NumberRange
+          label="Umidade"
+          minKey="umidade_min"
+          maxKey="umidade_max"
+          filters={filters}
+          onChange={onChangeFilters}
+        />
+        <NumberRange
+          label="Pressão atmosférica"
+          minKey="pressao_atmosferica_min"
+          maxKey="pressao_atmosferica_max"
+          filters={filters}
+          onChange={onChangeFilters}
+        />
+        <NumberRange
+          label="Velocidade do vento"
+          minKey="velocidade_vento_min"
+          maxKey="velocidade_vento_max"
+          filters={filters}
+          onChange={onChangeFilters}
+        />
+        <NumberRange
+          label="Precipitação"
+          minKey="precipitacao_min"
+          maxKey="precipitacao_max"
+          filters={filters}
+          onChange={onChangeFilters}
+        />
       </div>
     </section>
   );
 }
-

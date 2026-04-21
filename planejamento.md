@@ -6,24 +6,26 @@ Este projeto implementa um sistema de **previsão meteorológica de curtíssimo 
 
 O objetivo não é prever o clima global ou de longo prazo, mas sim modelar o comportamento local da atmosfera usando:
 
-- Séries temporais multivariadas  
-- Estrutura espacial entre sensores  
-- Aproximações físicas (transporte/advecção)  
-- Redes neurais  
+- Séries temporais multivariadas
+- Estrutura espacial entre sensores
+- Aproximações físicas (transporte/advecção)
+- Redes neurais
 
 ---
 
 ## 🎯 Objetivos
 
 ### ✔ Previsão de curtíssimo prazo
-- 10 minutos  
-- 30 minutos  
-- 60 minutos  
+
+- 10 minutos
+- 30 minutos
+- 60 minutos
 
 ### ✔ Detecção de eventos
-- Chuva iminente  
-- Queda brusca de temperatura  
-- Rajadas de vento  
+
+- Chuva iminente
+- Queda brusca de temperatura
+- Rajadas de vento
 
 ---
 
@@ -38,6 +40,7 @@ Modelo físico simplificado:
 \]
 
 Onde:
+
 - \(\phi\): variável (temperatura, umidade, etc.)
 - \(\vec{v}\): campo de vento
 
@@ -53,16 +56,16 @@ Cada estação fornece:
 x_i(t) = [T, H, P, V, chuva]
 \]
 
-- T: temperatura  
-- H: umidade  
-- P: pressão  
-- V: velocidade do vento  
-- chuva: precipitação  
+- T: temperatura
+- H: umidade
+- P: pressão
+- V: velocidade do vento
+- chuva: precipitação
 
 ### Entrada do modelo
 
-- Últimas 1–3 horas de dados  
-- Todas as estações  
+- Últimas 1–3 horas de dados
+- Todas as estações
 
 ---
 
@@ -70,27 +73,28 @@ x_i(t) = [T, H, P, V, chuva]
 
 As estações são modeladas como um **grafo**:
 
-- Nó: estação  
-- Aresta: proximidade/influência  
+- Nó: estação
+- Aresta: proximidade/influência
 
 Matriz de adjacência:
 
 \[
-A_{ij} = e^{-d_{ij}/\sigma}
+A*{ij} = e^{-d*{ij}/\sigma}
 \]
 
-- \(d_{ij}\): distância entre estações  
-- \(\sigma\): parâmetro de escala  
+- \(d\_{ij}\): distância entre estações
+- \(\sigma\): parâmetro de escala
 
 ---
 
 ## ⚙️ Arquitetura do Modelo
 
 ### 🔹 Opção 1 — LSTM + Features Espaciais
-- Entrada concatenada de todas as estações  
+
+- Entrada concatenada de todas as estações
 - Features adicionais:
-  - distância  
-  - direção do vento  
+  - distância
+  - direção do vento
 
 ---
 
@@ -98,11 +102,11 @@ A_{ij} = e^{-d_{ij}/\sigma}
 
 Pipeline:
 
-1. **Graph Neural Network (GNN)**  
-   - Propaga informação entre estações  
+1. **Graph Neural Network (GNN)**
+   - Propaga informação entre estações
 
-2. **LSTM**  
-   - Modela evolução temporal  
+2. **LSTM**
+   - Modela evolução temporal
 
 ---
 
@@ -114,7 +118,7 @@ Aproximação:
 \phi_i(t+\Delta t) \approx \phi_j(t)
 \]
 
-- \(j\): estação a montante (upwind)  
+- \(j\): estação a montante (upwind)
 
 Utiliza vento para estimar transporte de informação.
 
@@ -123,12 +127,14 @@ Utiliza vento para estimar transporte de informação.
 ## 📊 Saídas do Modelo
 
 ### ✔ Regressão
+
 - Valores futuros das variáveis (T, H, P, etc.)
 
 ### ✔ Classificação (eventos)
-- Chuva (0/1)  
-- Rajada (> limiar)  
-- Queda brusca de temperatura  
+
+- Chuva (0/1)
+- Rajada (> limiar)
+- Queda brusca de temperatura
 
 → Abordagem: **multi-task learning**
 
@@ -138,17 +144,17 @@ Utiliza vento para estimar transporte de informação.
 
 1. Coleta de dados (estações, 1 min)
 2. Pré-processamento:
-   - normalização  
-   - sincronização  
-   - tratamento de dados faltantes  
+   - normalização
+   - sincronização
+   - tratamento de dados faltantes
 3. Engenharia de features:
-   - médias móveis  
-   - gradientes temporais  
-   - diferenças espaciais  
+   - médias móveis
+   - gradientes temporais
+   - diferenças espaciais
 4. Treinamento do modelo
 5. Inferência:
-   - previsões  
-   - detecção de eventos  
+   - previsões
+   - detecção de eventos
 
 ---
 
@@ -156,10 +162,10 @@ Utiliza vento para estimar transporte de informação.
 
 O principal ganho não está apenas na rede neural, mas na **incorporação de conhecimento físico**:
 
-- Direção do vento  
-- Propagação espacial  
-- Correlação entre estações  
-- Tempo de atraso entre sinais  
+- Direção do vento
+- Propagação espacial
+- Correlação entre estações
+- Tempo de atraso entre sinais
 
 ---
 
@@ -175,10 +181,10 @@ Em vez disso, ele aprende uma aproximação de:
 
 ## 🚀 Possíveis Extensões
 
-- Estimar velocidade de propagação via correlação cruzada  
-- Modelagem explícita de atraso temporal entre estações  
-- Integração com dados externos (ex: modelos globais)  
-- Uso de ConvLSTM ou CNN 3D  
+- Estimar velocidade de propagação via correlação cruzada
+- Modelagem explícita de atraso temporal entre estações
+- Integração com dados externos (ex: modelos globais)
+- Uso de ConvLSTM ou CNN 3D
 
 ---
 
@@ -189,16 +195,17 @@ Este projeto implementa um:
 > Modelo espaço-temporal para nowcasting meteorológico com detecção de eventos baseado em sensores distribuídos
 
 Aplicável em:
-- cidades inteligentes  
-- agricultura de precisão  
-- monitoramento climático local  
+
+- cidades inteligentes
+- agricultura de precisão
+- monitoramento climático local
 
 ---
 
 ## 🧪 Próximos Passos
 
-- Implementar cálculo de correlação cruzada entre estações  
-- Estimar direção e velocidade das “ondas” de variáveis  
-- Validar previsões com dados reais  
+- Implementar cálculo de correlação cruzada entre estações
+- Estimar direção e velocidade das “ondas” de variáveis
+- Validar previsões com dados reais
 
 ---

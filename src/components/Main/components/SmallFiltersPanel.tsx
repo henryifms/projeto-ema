@@ -17,7 +17,9 @@ export function SmallFiltersPanel({
           <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
             Filtros da estação atual
           </p>
-          <h2 className="mt-1 text-lg font-bold text-gray-900">Refinar leituras</h2>
+          <h2 className="mt-1 text-lg font-bold text-gray-900">
+            Refinar leituras
+          </h2>
         </div>
         <button
           onClick={onReset}
@@ -26,7 +28,7 @@ export function SmallFiltersPanel({
           Limpar
         </button>
       </div>
-      
+
       <div className="space-y-3">
         <div className="grid grid-cols-2 gap-3">
           <input
@@ -34,7 +36,10 @@ export function SmallFiltersPanel({
             type="datetime-local"
             value={filters.criadaDepois}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, criadaDepois: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                criadaDepois: e.target.value,
+              }))
             }
           />
           <input
@@ -42,17 +47,24 @@ export function SmallFiltersPanel({
             type="datetime-local"
             value={filters.criadaAntes}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, criadaAntes: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                criadaAntes: e.target.value,
+              }))
             }
           />
         </div>
-        
+
         <div className="grid grid-cols-2 gap-3">
           <select
             className={inputClass}
             value={queryState.sort}
             onChange={(e) =>
-              onChangeQueryState((prev) => ({ ...prev, sort: e.target.value, page: 1 }))
+              onChangeQueryState((prev) => ({
+                ...prev,
+                sort: e.target.value,
+                page: 1,
+              }))
             }
           >
             <option value="data_leitura:desc">Mais recentes</option>
@@ -62,12 +74,16 @@ export function SmallFiltersPanel({
             <option value="umidade:desc">Umidade desc</option>
             <option value="umidade:asc">Umidade asc</option>
           </select>
-          
+
           <select
             className={inputClass}
             value={queryState.limit}
             onChange={(e) =>
-              onChangeQueryState((prev) => ({ ...prev, limit: Number(e.target.value), page: 1 }))
+              onChangeQueryState((prev) => ({
+                ...prev,
+                limit: Number(e.target.value),
+                page: 1,
+              }))
             }
           >
             <option value={10}>10 linhas</option>
@@ -75,7 +91,7 @@ export function SmallFiltersPanel({
             <option value={50}>50 linhas</option>
           </select>
         </div>
-        
+
         <div className="grid grid-cols-2 gap-3">
           <input
             className={inputClass}
@@ -83,7 +99,10 @@ export function SmallFiltersPanel({
             placeholder="Temp min"
             value={filters.temperatura_min}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, temperatura_min: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                temperatura_min: e.target.value,
+              }))
             }
           />
           <input
@@ -92,11 +111,14 @@ export function SmallFiltersPanel({
             placeholder="Temp max"
             value={filters.temperatura_max}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, temperatura_max: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                temperatura_max: e.target.value,
+              }))
             }
           />
         </div>
-        
+
         <div className="grid grid-cols-2 gap-3">
           <input
             className={inputClass}
@@ -104,7 +126,10 @@ export function SmallFiltersPanel({
             placeholder="Umidade min"
             value={filters.umidade_min}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, umidade_min: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                umidade_min: e.target.value,
+              }))
             }
           />
           <input
@@ -113,11 +138,14 @@ export function SmallFiltersPanel({
             placeholder="Umidade max"
             value={filters.umidade_max}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, umidade_max: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                umidade_max: e.target.value,
+              }))
             }
           />
         </div>
-        
+
         <div className="grid grid-cols-2 gap-3">
           <input
             className={inputClass}
@@ -125,7 +153,10 @@ export function SmallFiltersPanel({
             placeholder="Precipitação min"
             value={filters.precipitacao_min}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, precipitacao_min: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                precipitacao_min: e.target.value,
+              }))
             }
           />
           <input
@@ -134,7 +165,10 @@ export function SmallFiltersPanel({
             placeholder="Precipitação max"
             value={filters.precipitacao_max}
             onChange={(e) =>
-              onChangeFilters((prev) => ({ ...prev, precipitacao_max: e.target.value }))
+              onChangeFilters((prev) => ({
+                ...prev,
+                precipitacao_max: e.target.value,
+              }))
             }
           />
         </div>

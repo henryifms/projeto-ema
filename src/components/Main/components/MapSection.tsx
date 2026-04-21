@@ -27,9 +27,12 @@ export function MapSection({
           <div className="inline-flex items-center gap-2 rounded-full bg-green-600 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white">
             <FaSatellite /> mapa da estação
           </div>
-          <h2 className="mt-3 text-2xl font-bold text-gray-900">Mapa e busca de estação</h2>
+          <h2 className="mt-3 text-2xl font-bold text-gray-900">
+            Mapa e busca de estação
+          </h2>
           <p className="mt-2 text-sm text-gray-500">
-            Busque a estação mais próxima e selecione pontos para comparação diretamente na área principal.
+            Busque a estação mais próxima e selecione pontos para comparação
+            diretamente na área principal.
           </p>
         </div>
         <button
@@ -39,15 +42,18 @@ export function MapSection({
           <FaMagnifyingGlass /> Buscar estação mais próxima
         </button>
       </div>
-      
+
       <div className="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_290px]">
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
           <Map
             altura="500px"
-            center={[estacao.localizacao.coordinates[1], estacao.localizacao.coordinates[0]]}
+            center={[
+              estacao.localizacao.coordinates[1],
+              estacao.localizacao.coordinates[0],
+            ]}
           />
         </div>
-        
+
         <div className="space-y-4">
           <div className="rounded-xl border border-gray-200 bg-white p-4 shadow-sm">
             <div className="mb-3 flex items-center gap-2 text-sm font-semibold text-gray-800">
@@ -64,7 +70,9 @@ export function MapSection({
                   }`}
                 >
                   <div className="min-w-0 pr-3">
-                    <p className="truncate font-semibold text-gray-900">{station.nome}</p>
+                    <p className="truncate font-semibold text-gray-900">
+                      {station.nome}
+                    </p>
                     <p className="text-xs text-gray-500">ID {station.id}</p>
                   </div>
                   <input
@@ -78,7 +86,7 @@ export function MapSection({
               ))}
             </div>
           </div>
-          
+
           <div className="rounded-xl bg-gradient-to-br from-green-700 to-green-800 p-4 text-white shadow-md">
             <div className="flex items-center gap-2 text-sm font-semibold text-white">
               <FaLocationDot className="text-green-300" /> Resultado da busca
@@ -88,11 +96,16 @@ export function MapSection({
                 <p className="text-base font-semibold text-white">
                   {nearestInfo.nome || nearestInfo.estacao?.nome || "Resultado"}
                 </p>
-                <p>{nearestInfo.endereco || nearestInfo.estacao?.endereco || "Sem endereço disponível"}</p>
+                <p>
+                  {nearestInfo.endereco ||
+                    nearestInfo.estacao?.endereco ||
+                    "Sem endereço disponível"}
+                </p>
               </div>
             ) : (
               <p className="mt-3 text-sm text-green-100">
-                Clique em buscar para carregar a estação mais próxima com base na estação que você está analisando.
+                Clique em buscar para carregar a estação mais próxima com base
+                na estação que você está analisando.
               </p>
             )}
           </div>

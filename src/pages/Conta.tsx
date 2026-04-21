@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { FaSatellite, FaArrowRight, FaExclamationTriangle } from "react-icons/fa";
+import {
+  FaSatellite,
+  FaArrowRight,
+  FaExclamationTriangle,
+} from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
 interface EstacaoVinculada {
@@ -32,15 +36,18 @@ const Conta = () => {
 
         const userJson = JSON.parse(userStorage);
         // Ajuste aqui se o seu back usar _id ou id
-        const userId = userJson.id || userJson._id; 
+        const userId = userJson.id || userJson._id;
 
-        const res = await fetch(`${import.meta.env.VITE_BACK_URL}/usuarios/${userId}`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}` // ADICIONADO: Envio do token
-          }
-        });
+        const res = await fetch(
+          `${import.meta.env.VITE_BACK_URL}/usuarios/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`, // ADICIONADO: Envio do token
+            },
+          },
+        );
 
         if (res.status === 401) {
           localStorage.clear();
@@ -63,10 +70,20 @@ const Conta = () => {
     carregarDadosUsuario();
   }, [navigate]);
 
-  if (loading) return <div className="p-10 text-center text-gray-500">Carregando dados da conta...</div>;
+  if (loading)
+    return (
+      <div className="p-10 text-center text-gray-500">
+        Carregando dados da conta...
+      </div>
+    );
 
   // Se após carregar o usuário ainda for nulo (erro na API), mostramos uma mensagem
-  if (!usuario) return <div className="p-10 text-center text-red-500">Erro ao carregar perfil.</div>;
+  if (!usuario)
+    return (
+      <div className="p-10 text-center text-red-500">
+        Erro ao carregar perfil.
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8 font-sans">
@@ -81,10 +98,15 @@ const Conta = () => {
                 {/* Corrigido com Optional Chaining (?.) para não quebrar */}
                 {usuario?.nome?.charAt(0).toUpperCase() || "U"}
               </div>
-              <h2 className="text-xl font-bold text-gray-800">{usuario?.nome}</h2>
+              <h2 className="text-xl font-bold text-gray-800">
+                {usuario?.nome}
+              </h2>
               <p className="text-sm text-gray-500 mb-4">{usuario?.email}</p>
               <button
-                onClick={() => { localStorage.clear(); navigate("/"); }}
+                onClick={() => {
+                  localStorage.clear();
+                  navigate("/");
+                }}
                 className="text-red-500 text-sm font-semibold hover:underline"
               >
                 Sair da conta
@@ -96,7 +118,9 @@ const Conta = () => {
                 <FaExclamationTriangle /> Status da Conta
               </div>
               <p className="text-xs text-blue-600 leading-relaxed">
-                Você tem acesso a <b>{usuario?.estacoes?.length || 0} estações</b> monitoradas em tempo real.
+                Você tem acesso a{" "}
+                <b>{usuario?.estacoes?.length || 0} estações</b> monitoradas em
+                tempo real.
               </p>
             </div>
           </div>
@@ -126,8 +150,12 @@ const Conta = () => {
                           <FaSatellite />
                         </div>
                         <div>
-                          <p className="font-bold text-gray-700 group-hover:text-green-700">{estacao.nome}</p>
-                          <p className="text-xs text-gray-400 font-medium tracking-tight">ID: {estacao.id}</p>
+                          <p className="font-bold text-gray-700 group-hover:text-green-700">
+                            {estacao.nome}
+                          </p>
+                          <p className="text-xs text-gray-400 font-medium tracking-tight">
+                            ID: {estacao.id}
+                          </p>
                         </div>
                       </div>
                       <FaArrowRight className="text-gray-300 group-hover:text-green-500 group-hover:translate-x-1 transition-all" />
@@ -136,7 +164,9 @@ const Conta = () => {
                 </div>
               ) : (
                 <div className="text-center py-10 border-2 border-dashed border-gray-100 rounded-2xl">
-                  <p className="text-gray-400 text-sm">Nenhuma estação vinculada a este perfil.</p>
+                  <p className="text-gray-400 text-sm">
+                    Nenhuma estação vinculada a este perfil.
+                  </p>
                 </div>
               )}
             </div>

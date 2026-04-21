@@ -1,17 +1,26 @@
 import { useState, useEffect } from "react";
-import { 
-  Trash2, Edit3, Plus, MapPin, Clock, Calendar, 
-  User, Users, AlertCircle, ArrowRight, Settings 
+import {
+  Trash2,
+  Edit3,
+  Plus,
+  MapPin,
+  Clock,
+  Calendar,
+  User,
+  Users,
+  AlertCircle,
+  ArrowRight,
+  Settings,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 function formatarData(dataString: string) {
-  return new Date(dataString).toLocaleDateString('pt-BR', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+  return new Date(dataString).toLocaleDateString("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
@@ -81,16 +90,34 @@ export default function Estacoes() {
     fetchEstacoes();
   }, []);
 
-  const ativaCount = estacoes.filter(e => e.status === "ATIVA").length;
+  const ativaCount = estacoes.filter((e) => e.status === "ATIVA").length;
   const total = estacoes.length;
   const totalLeituras = estacoes.reduce((sum, e) => sum + e.leituras.length, 0);
 
   const getStatusConfig = (status: Estacao["status"]) => {
     switch (status) {
-      case "ATIVA": return { color: "text-green-700 dark:text-green-300", bg: "bg-green-100 dark:bg-green-900/40", icon: AlertCircle, label: "ATIVA" };
-      case "MANUTENCAO": return { color: "text-sky-700 dark:text-sky-300", bg: "bg-sky-100 dark:bg-sky-900/40", icon: Settings, label: "MANUTENÇÃO" };
-      case "INATIVA": 
-      default: return { color: " text-amber-700 dark:text-amber-300", bg: "bg-amber-100 dark:bg-amber-900/40", icon: Clock, label: "INATIVA" };
+      case "ATIVA":
+        return {
+          color: "text-green-700 dark:text-green-300",
+          bg: "bg-green-100 dark:bg-green-900/40",
+          icon: AlertCircle,
+          label: "ATIVA",
+        };
+      case "MANUTENCAO":
+        return {
+          color: "text-sky-700 dark:text-sky-300",
+          bg: "bg-sky-100 dark:bg-sky-900/40",
+          icon: Settings,
+          label: "MANUTENÇÃO",
+        };
+      case "INATIVA":
+      default:
+        return {
+          color: " text-amber-700 dark:text-amber-300",
+          bg: "bg-amber-100 dark:bg-amber-900/40",
+          icon: Clock,
+          label: "INATIVA",
+        };
     }
   };
 
@@ -115,10 +142,10 @@ export default function Estacoes() {
 
     setLoading(true);
     try {
-      const url = editando 
+      const url = editando
         ? `${import.meta.env.VITE_BACK_URL}/estacoes/${editando.id}`
         : `${import.meta.env.VITE_BACK_URL}/estacoes`;
-      
+
       await fetch(url, {
         method: editando ? "PUT" : "POST",
         headers: {
@@ -185,7 +212,7 @@ export default function Estacoes() {
           {estacoes.map((estacao) => {
             const statusConfig = getStatusConfig(estacao.status);
             const StatusIcon = statusConfig.icon;
-            
+
             return (
               <div
                 key={estacao.id}
@@ -195,13 +222,19 @@ export default function Estacoes() {
                 {/* Header com Status */}
                 <div className="flex justify-between items-start mb-6">
                   <div className="flex items-center gap-4">
-                    <div className={`p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all ${statusConfig.bg} ${statusConfig.color.replace('text-', 'text-')}`}>
+                    <div
+                      className={`p-4 rounded-2xl shadow-lg group-hover:shadow-xl transition-all ${statusConfig.bg} ${statusConfig.color.replace("text-", "text-")}`}
+                    >
                       <StatusIcon className={`w-6 h-6 ${statusConfig.color}`} />
                     </div>
                     <div>
-                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-green-700 transition-colors">{estacao.nome}</h3>
+                      <h3 className="font-bold text-xl text-gray-900 group-hover:text-green-700 transition-colors">
+                        {estacao.nome}
+                      </h3>
                       <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-                        <span className="px-2 py-1 bg-white/60 rounded-full text-xs font-medium">{statusConfig.label}</span>
+                        <span className="px-2 py-1 bg-white/60 rounded-full text-xs font-medium">
+                          {statusConfig.label}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -212,11 +245,13 @@ export default function Estacoes() {
                 <div className="space-y-3 mb-6">
                   <div className="flex items-start gap-3 text-sm">
                     <MapPin className="w-5 h-5 text-gray-400 mt-0.5 flex-shrink-0" />
-                    <p className="text-gray-600 leading-relaxed line-clamp-2">{estacao.endereco}</p>
+                    <p className="text-gray-600 leading-relaxed line-clamp-2">
+                      {estacao.endereco}
+                    </p>
                   </div>
                   {estacao.localizacao && (
                     <div className="flex items-center gap-2 text-xs text-gray-500 bg-gray-50 px-3 py-2 rounded-xl">
-                       {formatarCoordenadas(estacao.localizacao)}
+                      {formatarCoordenadas(estacao.localizacao)}
                     </div>
                   )}
                 </div>
@@ -230,7 +265,9 @@ export default function Estacoes() {
                     <div className="text-xs text-gray-500">leituras</div>
                   </div>
                   <div className="text-center p-3 bg-blue-50/50 rounded-xl group-hover:bg-white/50 transition-all">
-                    <div className="text-sm font-semibold text-gray-900">{estacao.equipe.length}</div>
+                    <div className="text-sm font-semibold text-gray-900">
+                      {estacao.equipe.length}
+                    </div>
                     <div className="text-xs text-gray-500 flex items-center justify-center gap-1">
                       <Users className="w-3 h-3" /> equipe
                     </div>
@@ -242,7 +279,9 @@ export default function Estacoes() {
                   <div className="flex items-center gap-2 text-sm text-gray-700">
                     <User className="w-4 h-4 text-gray-400" />
                     <span className="font-semibold">Proprietário:</span>
-                    <span className="text-gray-600">{estacao.proprietario.nome}</span>
+                    <span className="text-gray-600">
+                      {estacao.proprietario.nome}
+                    </span>
                   </div>
                   <div className="flex items-center justify-between text-xs text-gray-500 bg-gray-50 px-4 py-2 rounded-xl">
                     <div className="flex items-center gap-2">
@@ -256,14 +295,20 @@ export default function Estacoes() {
                 {/* Ações (aparecem no hover) */}
                 <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300 pt-4 border-t border-gray-100">
                   <button
-                    onClick={(ev) => { ev.stopPropagation(); openModal(estacao); }}
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      openModal(estacao);
+                    }}
                     className="p-3 text-blue-600 hover:text-blue-900 hover:bg-blue-100 rounded-2xl transition-all flex-1 text-center"
                     title="Editar"
                   >
                     <Edit3 className="w-5 h-5 mx-auto" />
                   </button>
                   <button
-                    onClick={(ev) => { ev.stopPropagation(); handleDelete(estacao.id); }}
+                    onClick={(ev) => {
+                      ev.stopPropagation();
+                      handleDelete(estacao.id);
+                    }}
                     className="p-3 text-red-600 hover:text-red-900 hover:bg-red-100 rounded-2xl transition-all flex-1 text-center"
                     title="Deletar"
                   >
@@ -299,53 +344,73 @@ export default function Estacoes() {
             <form onSubmit={handleSubmit} className="p-8 space-y-6">
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Nome da Estação *</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Nome da Estação *
+                  </label>
                   <input
                     required
                     value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nome: e.target.value })
+                    }
                     className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-lg"
                     placeholder="Ex: Estação IFMS"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Endereço Completo</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Endereço Completo
+                  </label>
                   <input
                     value={formData.endereco}
-                    onChange={(e) => setFormData({ ...formData, endereco: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, endereco: e.target.value })
+                    }
                     className="w-full px-5 py-4 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300"
                     placeholder="Rua, número, bairro, cidade, estado"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Status</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">
+                    Status
+                  </label>
                   <div className="grid grid-cols-3 gap-3 pt-2">
-                    {(["INATIVA", "MANUTENCAO", "ATIVA"] as const).map((status) => {
-                      const config = getStatusConfig(status);
-                      const StatusIcon = config.icon;
-                      return (
-                        <label key={status} className="cursor-pointer">
-                          <input
-                            type="radio"
-                            name="status"
-                            value={status}
-                            checked={formData.status === status}
-                            onChange={() => setFormData({ ...formData, status })}
-                            className="sr-only peer"
-                          />
-                          <div className={`p-4 rounded-2xl border-2 transition-all peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-100 peer-checked:bg-blue-50 ${config.bg}`}>
-                            <StatusIcon className={`w-6 h-6 mx-auto mb-2 ${config.color}`} />
-                            <div className="text-sm font-medium text-gray-800">{config.label}</div>
-                          </div>
-                        </label>
-                      );
-                    })}
+                    {(["INATIVA", "MANUTENCAO", "ATIVA"] as const).map(
+                      (status) => {
+                        const config = getStatusConfig(status);
+                        const StatusIcon = config.icon;
+                        return (
+                          <label key={status} className="cursor-pointer">
+                            <input
+                              type="radio"
+                              name="status"
+                              value={status}
+                              checked={formData.status === status}
+                              onChange={() =>
+                                setFormData({ ...formData, status })
+                              }
+                              className="sr-only peer"
+                            />
+                            <div
+                              className={`p-4 rounded-2xl border-2 transition-all peer-checked:border-blue-500 peer-checked:shadow-md peer-checked:shadow-blue-100 peer-checked:bg-blue-50 ${config.bg}`}
+                            >
+                              <StatusIcon
+                                className={`w-6 h-6 mx-auto mb-2 ${config.color}`}
+                              />
+                              <div className="text-sm font-medium text-gray-800">
+                                {config.label}
+                              </div>
+                            </div>
+                          </label>
+                        );
+                      },
+                    )}
                   </div>
                 </div>
               </div>
-              
+
               <div className="flex gap-4 pt-6 border-t border-gray-100">
                 <button
                   type="button"
@@ -359,7 +424,11 @@ export default function Estacoes() {
                   disabled={loading}
                   className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-4 rounded-2xl font-semibold shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
                 >
-                  {loading ? "Salvando..." : editando ? "Atualizar Estação" : "Criar Estação"}
+                  {loading
+                    ? "Salvando..."
+                    : editando
+                      ? "Atualizar Estação"
+                      : "Criar Estação"}
                 </button>
               </div>
             </form>

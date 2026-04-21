@@ -17,7 +17,7 @@ export default function UsuarioDetalhe() {
           `${import.meta.env.VITE_BACK_URL}/usuarios/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
-          }
+          },
         );
 
         if (res.status === 401) {
@@ -74,13 +74,9 @@ export default function UsuarioDetalhe() {
             {usuario?.nome?.charAt(0).toUpperCase() || "U"}
           </div>
 
-          <h1 className="text-xl font-bold text-gray-800">
-            {usuario.nome}
-          </h1>
+          <h1 className="text-xl font-bold text-gray-800">{usuario.nome}</h1>
 
-          <p className="text-sm text-gray-500 mb-4">
-            {usuario.email}
-          </p>
+          <p className="text-sm text-gray-500 mb-4">{usuario.email}</p>
 
           <div className="grid grid-cols-2 gap-4 w-full mt-4">
             <div className="bg-gray-50 p-4 rounded-xl">
@@ -92,9 +88,7 @@ export default function UsuarioDetalhe() {
 
             <div className="bg-green-50 p-4 rounded-xl">
               <p className="text-xs text-gray-400">Status</p>
-              <p className="text-lg font-bold text-green-600">
-                Ativo
-              </p>
+              <p className="text-lg font-bold text-green-600">Ativo</p>
             </div>
           </div>
         </div>

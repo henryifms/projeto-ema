@@ -17,7 +17,7 @@ export function useLeituras(estacaoId?: string) {
 
   useEffect(() => {
     if (!estacaoId) return;
-    
+
     const run = async () => {
       setLoading(true);
       try {
@@ -30,7 +30,7 @@ export function useLeituras(estacaoId?: string) {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         const data = await res.json();
         setRawResponse(data);
@@ -39,9 +39,17 @@ export function useLeituras(estacaoId?: string) {
         setLoading(false);
       }
     };
-    
+
     run();
   }, [estacaoId, filters, queryState]);
 
-  return { filters, setFilters, queryState, setQueryState, leituras, rawResponse, loading };
+  return {
+    filters,
+    setFilters,
+    queryState,
+    setQueryState,
+    leituras,
+    rawResponse,
+    loading,
+  };
 }

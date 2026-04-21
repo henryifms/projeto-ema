@@ -49,9 +49,13 @@ export interface EstacaoResumo {
   leituras?: Leitura[];
 }
 
-
 export type InsightTab = "logs" | "convites";
-export type MetricTab = "temperatura" | "umidade" | "pressao_atmosferica" | "velocidade_vento" | "precipitacao";
+export type MetricTab =
+  | "temperatura"
+  | "umidade"
+  | "pressao_atmosferica"
+  | "velocidade_vento"
+  | "precipitacao";
 
 export interface QueryState {
   page: number;

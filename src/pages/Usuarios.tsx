@@ -36,20 +36,17 @@ export default function Usuarios() {
   const handleSave = async () => {
     const token = localStorage.getItem("token");
 
-    await fetch(
-      `${import.meta.env.VITE_BACK_URL}/usuarios/${editingUser.id}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(editingUser),
-      }
-    );
+    await fetch(`${import.meta.env.VITE_BACK_URL}/usuarios/${editingUser.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(editingUser),
+    });
 
     setUsuarios((prev) =>
-      prev.map((u) => (u.id === editingUser.id ? editingUser : u))
+      prev.map((u) => (u.id === editingUser.id ? editingUser : u)),
     );
 
     setEditingUser(null);

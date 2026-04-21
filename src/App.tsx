@@ -1,4 +1,9 @@
-import { HashRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import {
+  HashRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 // páginas
 import Home from "./pages/Home.tsx";
@@ -13,9 +18,11 @@ import Usuarios from "./pages/Usuarios.tsx";
 import DocsPage from "./pages/DocsPage.tsx";
 import DashboardIndex from "./pages/DashboardIndex";
 import Sobre from "./pages/Sobre";
+import Historico from "./pages/Historico";
 
 // layout
 import Layout from "./components/Layout.tsx";
+import DashboardHeader from "./components/DashboardHeader.tsx";
 
 const PrivateRoute = ({ children }: any) => {
   const isAuth = !!localStorage.getItem("token");
@@ -26,7 +33,6 @@ export default function App() {
   return (
     <Router>
       <Routes>
-
         {/* PUBLICO */}
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
@@ -38,23 +44,29 @@ export default function App() {
         {/* PRIVADO */}
 
         <Route
-  path="/dashboard"
-  element={
-    <PrivateRoute>
-      <Layout>
-        <DashboardIndex />
-      </Layout>
-    </PrivateRoute>
-  }
-/>
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+                <DashboardHeader />
+                <Layout>
+                  <DashboardIndex />
+                </Layout>
+              </div>
+            </PrivateRoute>
+          }
+        />
 
         <Route
           path="/dashboard/:id"
           element={
             <PrivateRoute>
-              <Layout>
-                <Dashboard />
-              </Layout>
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+                <DashboardHeader />
+                <Layout>
+                  <Dashboard />
+                </Layout>
+              </div>
             </PrivateRoute>
           }
         />
@@ -65,6 +77,17 @@ export default function App() {
             <PrivateRoute>
               <Layout>
                 <Estacoes />
+              </Layout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/estacoes/:id/historico"
+          element={
+            <PrivateRoute>
+              <Layout>
+                <Historico />
               </Layout>
             </PrivateRoute>
           }
@@ -107,7 +130,6 @@ export default function App() {
 
         {/* fallback */}
         <Route path="*" element={<Navigate to="/" />} />
-
       </Routes>
     </Router>
   );

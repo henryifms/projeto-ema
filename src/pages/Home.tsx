@@ -12,7 +12,9 @@ const Home = () => {
   const [openMap, setOpenMap] = useState(false);
   const [dadosPrevisao, setDadosPrevisao] = useState<DadoPrevisao[]>([]);
   const [loadingForecast, setLoadingForecast] = useState(true);
-  const [estacaoSelecionada, setEstacaoSelecionada] = useState<string | null>(null);
+  const [estacaoSelecionada, setEstacaoSelecionada] = useState<string | null>(
+    null,
+  );
 
   return (
     <div className="flex font-sans">
@@ -48,11 +50,11 @@ const Home = () => {
               Documentação
             </Link>
             <Link
-  to="/sobre"
-  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
->
-  Sobre
-</Link>
+              to="/sobre"
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-500 transition"
+            >
+              Sobre
+            </Link>
             <Link
               to="/login"
               className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition"
@@ -97,10 +99,7 @@ const Home = () => {
               </span>
             </div>
             <div className="rounded-2xl overflow-hidden shadow-xl border border-gray-200 relative z-0">
-              <Map
-                altura="500px"
-                onSelectEstacao={setEstacaoSelecionada}
-              />
+              <Map altura="500px" onSelectEstacao={setEstacaoSelecionada} />
             </div>
           </div>
 
@@ -120,7 +119,7 @@ const Home = () => {
         </footer>
       </div>
 
-            {/* MODAL DO MAPA (Versão Limpa) */}
+      {/* MODAL DO MAPA (Versão Limpa) */}
       {openMap && (
         <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] p-4 md:p-10">
           <div className="w-full h-full bg-white rounded-3xl overflow-hidden relative shadow-2xl border border-white/20">

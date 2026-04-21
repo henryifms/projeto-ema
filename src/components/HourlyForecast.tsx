@@ -54,7 +54,7 @@ const HourlyForecast = ({
         agora.toLocaleTimeString("pt-BR", {
           hour: "2-digit",
           minute: "2-digit",
-        })
+        }),
       );
     };
 
@@ -90,7 +90,7 @@ const HourlyForecast = ({
               body: JSON.stringify({
                 localizacao: { latitude, longitude },
               }),
-            }
+            },
           );
 
           if (!res.ok) throw new Error();
@@ -101,7 +101,7 @@ const HourlyForecast = ({
           definirEstacaoPadrao();
         }
       },
-      () => definirEstacaoPadrao()
+      () => definirEstacaoPadrao(),
     );
   }, []);
 
@@ -113,7 +113,7 @@ const HourlyForecast = ({
       setLoading(true);
       try {
         const response = await fetch(
-          `${import.meta.env.VITE_BACK_URL}/estacoes/${id}/leituras`
+          `${import.meta.env.VITE_BACK_URL}/estacoes/${id}/leituras`,
         );
 
         if (!response.ok) throw new Error();
@@ -124,7 +124,7 @@ const HourlyForecast = ({
           const ordenados = json.sort(
             (a: any, b: any) =>
               new Date(b.data_leitura).getTime() -
-              new Date(a.data_leitura).getTime()
+              new Date(a.data_leitura).getTime(),
           );
 
           setDadosAtuais(ordenados[0]);
@@ -167,9 +167,7 @@ const HourlyForecast = ({
       return (
         <div className="bg-gray-800/80 backdrop-blur-md p-3 rounded-xl text-xs">
           <p className="text-green-400 font-medium">{label}</p>
-          <span className="text-white font-semibold">
-            {payload[0].value}°C
-          </span>
+          <span className="text-white font-semibold">{payload[0].value}°C</span>
         </div>
       );
     }
@@ -188,7 +186,7 @@ const HourlyForecast = ({
               climaAtual
                 ? getWeatherImage(
                     climaAtual.precipitacao,
-                    climaAtual.temperatura
+                    climaAtual.temperatura,
                   )
                 : "/projeto-ema/default.png"
             }
@@ -212,7 +210,10 @@ const HourlyForecast = ({
             [
               { label: "Temp", value: `${climaAtual.temperatura}°C` },
               { label: "Chuva", value: `${climaAtual.precipitacao}%` },
-              { label: "Pressão", value: `${climaAtual.pressao_atmosferica} hPa` },
+              {
+                label: "Pressão",
+                value: `${climaAtual.pressao_atmosferica} hPa`,
+              },
               { label: "Umidade", value: `${climaAtual.umidade}%` },
               { label: "Vento", value: `${climaAtual.velocidade_vento} km/h` },
               {
@@ -237,9 +238,7 @@ const HourlyForecast = ({
       {mostrarAviso && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-[9999]">
           <div className="bg-white p-6 rounded-2xl shadow-xl text-center">
-            <h2 className="text-lg font-semibold text-gray-800 mb-2">
-              Alerta
-            </h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-2">Alerta</h2>
             <p className="text-sm text-gray-600 mb-4">
               Possível mudança no clima.
             </p>

@@ -15,87 +15,123 @@ L.Icon.Default.mergeOptions({
 
 type MapProps = {
   altura?: string;
+  largura?: string;
   center?: [number, number];
+
+  // 🔥 DASHBOARD MODE
+  selectedStations?: number[];
+  onToggleEstacao?: (id: number) => void;
+
+  // 🔥 HOME MODE
   onSelectEstacao?: (id: string) => void;
 };
 
-const Map = ({ altura = "400px", center, onSelectEstacao }: MapProps) => {
-  const mapContainerRef = useRef<HTMLDivElement>(null);
-  const mapInstanceRef = useRef<L.Map | null>(null);
+export default function Map({
+  altura = "400px",
+  largura = "100%",
+  center,
+  selectedStations,
+  onToggleEstacao,
+  onSelectEstacao,
+}: MapProps) {
+  const mapRef = useRef<L.Map | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const layerRef = useRef<L.LayerGroup | null>(null);
   const originalBoundsRef = useRef<L.LatLngBounds | null>(null);
-  const legendDivRef = useRef<HTMLDivElement | null>(null);
+  const legendRef = useRef<HTMLDivElement | null>(null);
+
+  const isDashboard = !!selectedStations;
 
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!containerRef.current) return;
 
-    if (mapInstanceRef.current) {
-      if (center) {
-        mapInstanceRef.current.flyTo(center, 17, { duration: 1.5 });
-      }
-      return;
-    }
+    // 🔥 CRIA MAPA UMA VEZ
+    if (!mapRef.current) {
+      mapRef.current = L.map(containerRef.current).setView(
+        center || [-20.75, -51.64],
+        center ? 17 : 12,
+      );
 
-    const map = L.map(mapContainerRef.current).setView(
-      center || [-20.75, -51.64],
-      center ? 18 : 12
-    );
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        mapRef.current,
+      );
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(map);
+      layerRef.current = L.layerGroup().addTo(mapRef.current);
 
-    mapInstanceRef.current = map;
+      if (!isDashboard) {
+        const legend = new L.Control({ position: "bottomleft" });
 
-    const legend = new L.Control({ position: "bottomleft" });
+        legend.onAdd = () => {
+          const div = L.DomUtil.create("div");
 
-    legend.onAdd = () => {
-      const div = L.DomUtil.create("div", "map-legend");
+          Object.assign(div.style, {
+            background: "white",
+            borderRadius: "20px",
+            boxShadow: "0 20px 40px rgba(0,0,0,0.12)",
+            minWidth: "240px",
+            overflow: "hidden",
+            display: "none",
+            border: "1px solid #e2e8f0",
+            fontFamily: "system-ui, sans-serif",
+            backdropFilter: "blur(6px)",
+          });
 
-      Object.assign(div.style, {
-        background: "white",
-        borderRadius: "16px",
-        boxShadow: "0 10px 25px rgba(0,0,0,0.15)",
-        minWidth: "220px",
-        overflow: "hidden",
-        display: "none",
-        fontFamily: "system-ui, sans-serif",
-        border: "1px solid #e5e7eb",
-      });
+          legendRef.current = div;
+          return div;
+        };
 
-      legendDivRef.current = div;
-      return div;
-    };
+        legend.addTo(mapRef.current);
 
-    legend.addTo(map);
+        mapRef.current.getContainer().addEventListener("mouseleave", () => {
+          if (legendRef.current) legendRef.current.style.display = "none";
 
-    map.getContainer().addEventListener("mouseleave", () => {
-      if (legendDivRef.current) legendDivRef.current.style.display = "none";
-
-      if (originalBoundsRef.current) {
-        map.flyToBounds(originalBoundsRef.current, {
-          padding: [50, 50],
-          duration: 1.5,
+          if (originalBoundsRef.current) {
+            mapRef.current!.flyToBounds(originalBoundsRef.current, {
+              padding: [50, 50],
+              duration: 1.5,
+            });
+          }
         });
       }
-    });
+    }
 
+    // 🔥 BUSCA ESTAÇÕES
     fetch(`${import.meta.env.VITE_BACK_URL}/estacoes`)
-      .then((res) => res.json())
+      .then((r) => r.json())
       .then((estacoes: any[]) => {
+        if (!layerRef.current || !mapRef.current) return;
+
+        layerRef.current.clearLayers();
+
         const points: L.LatLngExpression[] = [];
+        const selectedPoints: L.LatLngExpression[] = [];
 
         estacoes.forEach((estacao) => {
           const [lon, lat] = estacao.localizacao.coordinates;
           const coords: L.LatLngExpression = [lat, lon];
+
           points.push(coords);
 
-          const marker = L.marker(coords).addTo(map);
+          const isSelected = selectedStations?.includes(estacao.id);
+
+          if (isSelected) selectedPoints.push(coords);
+
+          const marker = L.marker(coords).addTo(layerRef.current!);
           marker.bindTooltip(estacao.nome);
 
           marker.on("click", async () => {
-            map.flyTo(coords, 18, { duration: 1.2 });
+            // 🔥 DASHBOARD MODE
+            if (isDashboard) {
+              onToggleEstacao?.(estacao.id);
+              return;
+            }
+
+            // 🔥 HOME MODE
+            mapRef.current!.flyTo(coords, 18, { duration: 1.2 });
 
             try {
               const res = await fetch(
-                `${import.meta.env.VITE_BACK_URL}/estacoes/${estacao.id}/leituras/ultima`
+                `${import.meta.env.VITE_BACK_URL}/estacoes/${estacao.id}/leituras/ultima`,
               );
               const leitura = await res.json();
 
@@ -103,65 +139,111 @@ const Map = ({ altura = "400px", center, onSelectEstacao }: MapProps) => {
               const cor =
                 prec > 50 ? "#ef4444" : prec > 20 ? "#f59e0b" : "#3b82f6";
 
-              const percentual = Math.min((prec / 100) * 100, 100);
+              if (legendRef.current) {
+                legendRef.current.style.display = "block";
 
-              if (legendDivRef.current) {
-                legendDivRef.current.style.display = "block";
+                legendRef.current.innerHTML = `
+  <div style="
+    padding:14px 16px;
+    background:${cor};
+    color:white;
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:0.3px;
+  ">
+    ${estacao.nome}
+  </div>
 
-                legendDivRef.current.innerHTML = `
-                  <div style="background:${cor};color:white;padding:12px;font-weight:600;font-size:14px;">
-                    ${estacao.nome}
-                  </div>
+  <div style="
+    padding:16px;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+  ">
+    <span style="
+      font-size:11px;
+      text-transform:uppercase;
+      color:#64748b;
+      font-weight:600;
+      letter-spacing:0.6px;
+    ">
+      Precipitação
+    </span>
 
-                  <div style="padding:12px;font-size:13px;">
-                    <div style="color:#6b7280;font-weight:600;">
-                      Precipitação
-                    </div>
+    <span style="
+      font-size:26px;
+      font-weight:700;
+      color:#0f172a;
+      line-height:1;
+    ">
+      ${prec} mm
+    </span>
 
-                    <div style="font-size:22px;font-weight:700;">
-                      ${prec} mm
-                    </div>
-
-                    <div style="width:100%;height:8px;background:#f3f4f6;border-radius:8px;margin-top:8px;">
-                      <div style="width:${percentual}%;height:100%;background:${cor};border-radius:8px;"></div>
-                    </div>
-                  </div>
-                `;
+    <div style="
+      width:100%;
+      height:6px;
+      background:#f1f5f9;
+      border-radius:999px;
+      overflow:hidden;
+      margin-top:6px;
+    ">
+      <div style="
+        width:${Math.min((prec / 100) * 100, 100)}%;
+        height:100%;
+        background:${cor};
+        border-radius:999px;
+      "></div>
+    </div>
+  </div>
+`;
               }
-            } catch (err) {
-              console.error(err);
-            }
+            } catch {}
 
             onSelectEstacao?.(String(estacao.id));
           });
+
+          // 🔥 CÍRCULO DASHBOARD
+          if (isDashboard && isSelected) {
+            L.circle(coords, {
+              radius: 500,
+              color: "#22c55e",
+              fillColor: "#22c55e",
+              fillOpacity: 0.15,
+              weight: 2,
+            }).addTo(layerRef.current!);
+          }
         });
 
-        if (!center && points.length > 0) {
+        // 🔥 FIT BOUNDS INTELIGENTE
+
+        // DASHBOARD → foco nas selecionadas
+        if (isDashboard && selectedPoints.length > 0) {
+          const bounds = L.latLngBounds(selectedPoints);
+          mapRef.current.flyToBounds(bounds, {
+            padding: [80, 80],
+            duration: 1.2,
+          });
+          return;
+        }
+
+        // HOME ou fallback → todas
+        if (points.length > 0) {
           const bounds = L.latLngBounds(points);
           originalBoundsRef.current = bounds;
 
-          map.flyToBounds(bounds, {
+          mapRef.current.flyToBounds(bounds, {
             padding: [50, 50],
             duration: 1.5,
           });
-        } else if (points.length > 0) {
-          originalBoundsRef.current = L.latLngBounds(points);
         }
       });
-
-    return () => {
-      map.remove();
-      mapInstanceRef.current = null;
-    };
-  }, [center]);
+  }, [selectedStations, center]);
 
   return (
     <div
-      ref={mapContainerRef}
-      style={{ height: altura, width: "100%" }}
-      className="rounded-2xl shadow-sm border border-gray-200 overflow-hidden"
+      ref={containerRef}
+      style={{ height: altura, width: largura }}
+      className="rounded-2xl border border-gray-200 overflow-hidden"
     />
   );
-};
-
-export default Map;
+}

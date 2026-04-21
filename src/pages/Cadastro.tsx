@@ -63,7 +63,9 @@ const Cadastro = () => {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-green-50 to-blue-50 font-sans">
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-xl border border-gray-200">
         <div className="mb-6 text-center">
-          <h1 className="text-3xl font-bold text-green-600 tracking-tight">EMA</h1>
+          <h1 className="text-3xl font-bold text-green-600 tracking-tight">
+            EMA
+          </h1>
           <p className="text-sm text-gray-500">Monitoramento Meteorológico</p>
         </div>
 
@@ -118,11 +120,11 @@ const Cadastro = () => {
           />
 
           <ReCAPTCHA
-  ref={recaptchaRef}
-  sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // use variável de ambiente
-  onChange={(token: string | null) => setCaptchaToken(token)}
-  onExpired={() => setCaptchaToken(null)}
-/>
+            ref={recaptchaRef}
+            sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // use variável de ambiente
+            onChange={(token: string | null) => setCaptchaToken(token)}
+            onExpired={() => setCaptchaToken(null)}
+          />
 
           <button
             type="submit"
@@ -134,7 +136,10 @@ const Cadastro = () => {
 
           <p className="text-sm text-gray-500 text-center">
             Já tem conta?{" "}
-            <Link to="/login" className="text-blue-500 font-medium hover:underline">
+            <Link
+              to="/login"
+              className="text-blue-500 font-medium hover:underline"
+            >
               Entrar
             </Link>
           </p>

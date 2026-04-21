@@ -23,11 +23,7 @@ type SwaggerEndpointDetails = {
   requestBody?: SwaggerRequestBody;
 };
 
-type SwaggerPaths = Record<
-  string,
-  Record<string, SwaggerEndpointDetails>
->;
-
+type SwaggerPaths = Record<string, Record<string, SwaggerEndpointDetails>>;
 
 type Endpoint = {
   method: string;
@@ -58,33 +54,32 @@ const EndpointCard = ({
 
     try {
       const finalPath = path.replace(/{[^}]+}/g, (param) => {
-  if (param.toLowerCase().includes("id")) return "1";
-  if (param.toLowerCase().includes("token")) return "abc123";
-  return "1";
-});      
+        if (param.toLowerCase().includes("id")) return "1";
+        if (param.toLowerCase().includes("token")) return "abc123";
+        return "1";
+      });
 
-if (method !== "GET" && !example) {
-  alert("Esse endpoint precisa de body!");
-  return;
-}
+      if (method !== "GET" && !example) {
+        alert("Esse endpoint precisa de body!");
+        return;
+      }
 
-        const res = await fetch(`${import.meta.env.VITE_BACK_URL}${finalPath}`, {
-
+      const res = await fetch(`${import.meta.env.VITE_BACK_URL}${finalPath}`, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
         body:
-  method !== "GET"
-    ? JSON.stringify(example && typeof example === "object" ? example : {})
-    : undefined,
-        });
+          method !== "GET"
+            ? JSON.stringify(
+                example && typeof example === "object" ? example : {},
+              )
+            : undefined,
+      });
 
       const data = await res.json();
 
-      setResponse(
-        `Status: ${res.status}\n\n${JSON.stringify(data, null, 2)}`
-      );
+      setResponse(`Status: ${res.status}\n\n${JSON.stringify(data, null, 2)}`);
     } catch (err) {
       if (err instanceof Error) {
         setResponse(`Erro: ${err.message}`);
@@ -104,10 +99,10 @@ if (method !== "GET" && !example) {
             method === "GET"
               ? "bg-green-500"
               : method === "POST"
-              ? "bg-blue-500"
-              : method === "DELETE"
-              ? "bg-red-500"
-              : "bg-gray-500"
+                ? "bg-blue-500"
+                : method === "DELETE"
+                  ? "bg-red-500"
+                  : "bg-gray-500"
           }`}
         >
           {method}
@@ -146,8 +141,8 @@ export default function DocsPage() {
   useEffect(() => {
     fetch(`${import.meta.env.VITE_BACK_URL}/docs.json`, {
       headers: {
-    "ngrok-skip-browser-warning": "true",
-  },
+        "ngrok-skip-browser-warning": "true",
+      },
     })
       .then((res) => res.json())
       .then((data) => {

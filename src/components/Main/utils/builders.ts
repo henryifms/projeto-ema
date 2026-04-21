@@ -17,7 +17,7 @@ export function buildQuery(filters: LeiturasFilters, queryState: QueryState) {
 export function buildOverlaySeries(
   base: Leitura[],
   selectedStations: EstacaoResumo[],
-  metric: MetricTab
+  metric: MetricTab,
 ) {
   const grouped: Record<string, Record<string, unknown>> = {};
 

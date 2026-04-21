@@ -20,11 +20,15 @@ export function StationInfo({ estacao, ultimaLeitura }: StationInfoProps) {
         </div>
         <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
           <p className="text-gray-500">Última temperatura</p>
-          <p className="mt-1 font-semibold text-gray-900">{formatNumber(ultimaLeitura?.temperatura)} °C</p>
+          <p className="mt-1 font-semibold text-gray-900">
+            {formatNumber(ultimaLeitura?.temperatura)} °C
+          </p>
         </div>
         <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
           <p className="text-gray-500">Última precipitação</p>
-          <p className="mt-1 font-semibold text-gray-900">{formatNumber(ultimaLeitura?.precipitacao)} mm</p>
+          <p className="mt-1 font-semibold text-gray-900">
+            {formatNumber(ultimaLeitura?.precipitacao)} mm
+          </p>
         </div>
       </div>
     </section>
