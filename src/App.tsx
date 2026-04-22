@@ -59,61 +59,12 @@ export default function App() {
           }
         />
 
-        <Route
-          path="/dashboard/:id"
-          element={
-            <PrivateRoute>
-              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-                <DashboardHeader />
-                <Layout>
-                  <Dashboard />
-                </Layout>
-              </div>
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/dashboard/:id/historico"
-          element={
-            <PrivateRoute>
-              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-                <DashboardHeader />
-                <Layout>
-                  <Historico />
-                </Layout>
-              </div>
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/dashboard/:id/relatorios"
-          element={
-            <PrivateRoute>
-              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-                <DashboardHeader />
-                <Layout>
-                  <Relatorios />
-                </Layout>
-              </div>
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/dashboard/:id/alertas"
-          element={
-            <PrivateRoute>
-              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
-                <DashboardHeader />
-                <Layout>
-                  <Alertas />
-                </Layout>
-              </div>
-            </PrivateRoute>
-          }
-        />
+        <Route path="/dashboard/:id" element={<DashboardIndex />}>
+  <Route index element={<Dashboard />} />
+  <Route path="historico" element={<Historico />} />
+  <Route path="relatorios" element={<Relatorios />} />
+  <Route path="alertas" element={<Alertas />} />
+</Route>
 
         <Route
           path="/estacoes"
@@ -121,17 +72,6 @@ export default function App() {
             <PrivateRoute>
               <Layout>
                 <Estacoes />
-              </Layout>
-            </PrivateRoute>
-          }
-        />
-
-        <Route
-          path="/estacoes/:id/historico"
-          element={
-            <PrivateRoute>
-              <Layout>
-                <Historico />
               </Layout>
             </PrivateRoute>
           }
