@@ -17,9 +17,6 @@ export function SmallFiltersPanel({
           <p className="text-xs font-semibold uppercase tracking-wider text-green-600">
             Filtros da estação atual
           </p>
-          <h2 className="mt-1 text-lg font-bold text-gray-900">
-            Refinar leituras
-          </h2>
         </div>
         <button
           onClick={onReset}

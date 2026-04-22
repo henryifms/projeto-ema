@@ -4,9 +4,7 @@ import {
   FaChartLine,
   FaMapMarkedAlt,
   FaUsers,
-  FaHistory,
   FaBell,
-  FaRegBell,
 } from "react-icons/fa";
 import type { ReactNode } from "react";
 
@@ -31,11 +29,6 @@ const menuItems: MenuItem[] = [
     name: "Usuários",
     path: "/usuarios",
     icon: <FaUsers className="w-4 h-4" />,
-  },
-  {
-    name: "Histórico",
-    path: "/estacoes/1/historico",
-    icon: <FaHistory className="w-4 h-4" />,
   },
 ];
 

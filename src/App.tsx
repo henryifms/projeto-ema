@@ -19,6 +19,8 @@ import DocsPage from "./pages/DocsPage.tsx";
 import DashboardIndex from "./pages/DashboardIndex";
 import Sobre from "./pages/Sobre";
 import Historico from "./pages/Historico";
+import Relatorios from "./pages/Relatorio";
+import Alertas from "./pages/Alertas";
 
 // layout
 import Layout from "./components/Layout.tsx";
@@ -65,6 +67,48 @@ export default function App() {
                 <DashboardHeader />
                 <Layout>
                   <Dashboard />
+                </Layout>
+              </div>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/:id/historico"
+          element={
+            <PrivateRoute>
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+                <DashboardHeader />
+                <Layout>
+                  <Historico />
+                </Layout>
+              </div>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/:id/relatorios"
+          element={
+            <PrivateRoute>
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+                <DashboardHeader />
+                <Layout>
+                  <Relatorios />
+                </Layout>
+              </div>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/dashboard/:id/alertas"
+          element={
+            <PrivateRoute>
+              <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+                <DashboardHeader />
+                <Layout>
+                  <Alertas />
                 </Layout>
               </div>
             </PrivateRoute>
