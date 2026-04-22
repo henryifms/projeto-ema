@@ -3,6 +3,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 import ReCAPTCHA from "react-google-recaptcha";
+import Alerta from "../components/Alerta";
 
 const Cadastro = () => {
   const navigate = useNavigate();
@@ -14,6 +15,10 @@ const Cadastro = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loadingRegister, setLoadingRegister] = useState(false);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   const recaptchaRef = useRef<ReCAPTCHA>(null);
 
@@ -22,7 +27,7 @@ const Cadastro = () => {
     setLoadingRegister(true);
 
     if (!captchaToken) {
-      alert("Confirme que você não é um robô");
+      setAlert({ message: "Confirme que você não é um robô", type: "error" });
       setLoadingRegister(false);
       return;
     }
@@ -42,7 +47,7 @@ const Cadastro = () => {
 
       if (!res.ok) {
         if (res.status === 409) {
-          alert("Email já cadastrado!");
+          setAlert({ message: "Email já cadastrado!", type: "error" });
           navigate("/login");
           return;
         }
@@ -51,7 +56,7 @@ const Cadastro = () => {
 
       navigate("/confirm-email");
     } catch {
-      alert("Erro ao cadastrar usuário");
+      setAlert({ message: "Erro ao cadastrar usuário", type: "error" });
     } finally {
       setLoadingRegister(false);
       recaptchaRef.current?.reset();
@@ -69,10 +74,9 @@ const Cadastro = () => {
           <p className="text-sm text-gray-500">Monitoramento Meteorológico</p>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
-          <h3 className="text-xl font-semibold text-green-600 tracking-tight">
-            Criar conta
-          </h3>
+        {alert && <Alerta message={alert.message} type={alert.type} />}
+
+        <form onSubmit={handleRegister} className="space-y-4 pt-4 ">
 
           <input
             type="text"
@@ -119,12 +123,14 @@ const Cadastro = () => {
             required
           />
 
+          <div className="flex justify-center">
           <ReCAPTCHA
             ref={recaptchaRef}
             sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY} // use variável de ambiente
             onChange={(token: string | null) => setCaptchaToken(token)}
             onExpired={() => setCaptchaToken(null)}
           />
+          </div>
 
           <button
             type="submit"

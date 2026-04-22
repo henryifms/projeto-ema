@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import Alerta from "../components/Alerta";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,10 +10,15 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [alert, setAlert] = useState<{
+    message: string;
+    type: "success" | "error";
+  } | null>(null);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setAlert(null);
 
     try {
       const res = await fetch(`${import.meta.env.VITE_BACK_URL}/login`, {
@@ -23,7 +29,10 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
-      if (!res.ok) throw new Error("Login inválido");
+      if (!res.ok) {
+        setAlert({ message: "Email ou senha inválidos", type: "error" });
+        return;
+      }
 
       const data = await res.json();
 
@@ -36,7 +45,7 @@ const Login = () => {
           headers: {
             Authorization: `Bearer ${data.token}`,
           },
-        },
+        }
       );
 
       const dataEstacoes = await resEstacoes.json();
@@ -52,13 +61,13 @@ const Login = () => {
           localStorage.setItem("estacaoId", id);
           navigate(`/dashboard/${id}`);
         } else {
-          alert("Erro: estação sem ID");
+          setAlert({ message: "Erro: estação sem ID", type: "error" });
         }
       } else {
-        alert("Nenhuma estação encontrada");
+        setAlert({ message: "Nenhuma estação encontrada", type: "error" });
       }
     } catch {
-      alert("Email ou senha inválidos");
+      setAlert({ message: "Erro ao fazer login", type: "error" });
     } finally {
       setLoading(false);
     }
@@ -73,6 +82,7 @@ const Login = () => {
           </h1>
           <p className="text-sm text-gray-500">Monitoramento Meteorológico</p>
         </div>
+
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
@@ -103,11 +113,16 @@ const Login = () => {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500"
               >
-                {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                {showPassword ? (
+                  <FaEyeSlash size={18} />
+                ) : (
+                  <FaEye size={18} />
+                )}
               </button>
             </div>
           </div>
 
+          {alert && <Alerta message={alert.message} type={alert.type} />}
           <p className="text-sm text-gray-500 text-center">
             Ainda não tem conta?{" "}
             <Link
