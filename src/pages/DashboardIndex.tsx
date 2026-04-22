@@ -19,13 +19,14 @@ import {
   FaMapMarkerAlt,
 } from "react-icons/fa";
 import { WiBarometer } from "react-icons/wi";
-import { Trash2, Edit3 } from "lucide-react";
+import { Trash2, Edit3, Plus, Clock, AlertCircle } from "lucide-react";
 
 type Estacao = {
   id: number;
   nome: string;
   status: string;
   endereco: string;
+  leituras: Array<{ id: string; estacao_id: number }>; // Adicionado para contar leituras
   ultima_leitura?: {
     temperatura: number;
     data_leitura: string;
@@ -93,7 +94,21 @@ export default function DashboardIndex() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [stationToDelete, setStationToDelete] = useState<Estacao | null>(null);
 
+  const [openMap, setOpenMap] = useState(false);
+
   const token = localStorage.getItem("token") || "";
+
+  // Calcular totais - CORRIGIDO: usa o array leituras que já vem da API
+  const totalLeituras = useMemo(() => {
+    return estacoes.reduce(
+      (acc, estacao) => acc + (estacao.leituras?.length || 0),
+      0
+    );
+  }, [estacoes]);
+
+  const ativaCount = useMemo(() => {
+    return estacoes.filter(e => e.status === "ATIVA").length;
+  }, [estacoes]);
 
   const inputClass =
     "px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-green-500";
@@ -204,13 +219,18 @@ export default function DashboardIndex() {
     if (!stationToDelete) return;
 
     try {
-      await fetch(`${import.meta.env.VITE_BACK_URL}/estacoes/${stationToDelete.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      await fetch(
+        `${import.meta.env.VITE_BACK_URL}/estacoes/${stationToDelete.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
       fetchEstacoes();
       // Remove da seleção se estava selecionada
-      setSelectedStations((prev) => prev.filter((s) => s !== stationToDelete.id));
+      setSelectedStations((prev) =>
+        prev.filter((s) => s !== stationToDelete.id),
+      );
     } catch (error) {
       console.error("Erro ao deletar estação:", error);
     } finally {
@@ -263,157 +283,200 @@ export default function DashboardIndex() {
   }, [stationsData, selectedStations, periodo, tipo, metric]);
 
   return (
-    <div className="space-y-8">
-      {/* Mapa + Gráfico */}
-      <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_1fr] gap-6">
-        <div className="rounded-[2rem] border border-slate-200 bg-white p-3 shadow-sm">
-          <Map
-            altura="100%"
-            selectedStations={selectedStations}
-            onToggleEstacao={toggleStation}
-          />
+    <div className="max-w-7xl mx-auto px-20 space-y-10">
+      {/* Header Dashboard */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
+        <div>
         </div>
-
-        <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
-          <div className="mb-5">
-            <h2 className="text-xl font-semibold text-slate-900">
-              Comparação entre estações
-            </h2>
+        <div className="flex flex-wrap gap-3">
+          <div className="flex items-center gap-1 text-sm text-gray-600 bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm">
+            <Clock className="w-4 h-4" /> {estacoes.length} estações
           </div>
-
-          <div className="flex gap-3 mb-6">
-            <select
-              className={inputClass}
-              value={periodo}
-              onChange={(e) => setPeriodo(e.target.value as any)}
-            >
-              <option value="diario">Diário</option>
-              <option value="mensal">Mensal</option>
-              <option value="anual">Anual</option>
-            </select>
-
-            <select
-              className={inputClass}
-              value={tipo}
-              onChange={(e) => setTipo(e.target.value as any)}
-            >
-              <option value="media">Média</option>
-              <option value="max">Máx</option>
-              <option value="min">Min</option>
-            </select>
+          <div className="flex items-center gap-1 text-sm px-4 py-2 rounded-xl backdrop-blur-sm bg-green-100 text-green-800">
+            <AlertCircle className="w-4 h-4" /> {ativaCount} ativas
           </div>
+          <div className="flex items-center gap-1 text-sm text-gray-600 bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm">
+            {totalLeituras} leituras
+          </div>
+          <button
+            onClick={() => openModal()}
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2 font-medium"
+          >
+            <Plus className="w-5 h-5" />
+            Nova Estação
+          </button>
+        </div>
+      </div>
 
-          <div className="grid grid-cols-[1fr_64px] gap-4">
-            <div className="rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-4">
-              <div className="flex justify-between items-center mb-3">
-                <p className="text-sm font-medium text-slate-700">
-                  {selectedStations.length}{" "}
-                  {selectedStations.length === 1 ? "estação" : "estações"} -{" "}
-                  <span className="text-green-600 capitalize">{metric}</span>
-                </p>
-              </div>
+      {/* Mapa + Gráfico */}
+      <div className="flex justify-center">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 max-w-6xl w-full">
+          <div className="rounded-[2rem] border border-slate-200 bg-white p-3 shadow-sm relative group overflow-hidden">
+            <div className="absolute inset-0 z-10 bg-black/0 group-hover:bg-black/5 transition-all duration-200 pointer-events-none" />
 
-              <div className="h-[300px]">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
-                    <defs>
+            <div className="absolute top-4 right-4 z-20 bg-white/80 backdrop-blur-md px-3 py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-all duration-200 pointer-events-none">
+              <span className="text-xs font-bold text-gray-600">
+                Clique para expandir
+              </span>
+            </div>
+
+            <div
+              onClick={() => setOpenMap(true)}
+              className="absolute inset-0 z-30 cursor-pointer"
+            />
+
+            <Map
+              altura="100%"
+              selectedStations={selectedStations}
+              onToggleEstacao={toggleStation}
+            />
+          </div>
+          <section className="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+            <div className="mb-5">
+              <h2 className="text-xl font-semibold text-slate-900">
+                Comparação entre estações
+              </h2>
+            </div>
+
+            <div className="flex gap-3 mb-6">
+              <select
+                className={inputClass}
+                value={periodo}
+                onChange={(e) => setPeriodo(e.target.value as any)}
+              >
+                <option value="diario">Diário</option>
+                <option value="mensal">Mensal</option>
+                <option value="anual">Anual</option>
+              </select>
+
+              <select
+                className={inputClass}
+                value={tipo}
+                onChange={(e) => setTipo(e.target.value as any)}
+              >
+                <option value="media">Média</option>
+                <option value="max">Máx</option>
+                <option value="min">Min</option>
+              </select>
+            </div>
+
+            <div className="grid grid-cols-[1fr_64px] gap-4">
+              <div className="rounded-2xl border border-slate-100 bg-gradient-to-br from-slate-50 to-white p-4">
+                <div className="flex justify-between items-center mb-3">
+                  <p className="text-sm font-medium text-slate-700">
+                    {selectedStations.length}{" "}
+                    {selectedStations.length === 1 ? "estação" : "estações"} -{" "}
+                    <span className="text-green-600 capitalize">{metric}</span>
+                  </p>
+                </div>
+
+                <div className="h-[300px]">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={chartData}>
+                      <defs>
+                        {selectedStations.map((id, idx) => {
+                          const color =
+                            stationColors[idx % stationColors.length];
+                          return (
+                            <linearGradient
+                              key={id}
+                              id={`gradient-${id}`}
+                              x1="0"
+                              y1="0"
+                              x2="0"
+                              y2="1"
+                            >
+                              <stop
+                                offset="5%"
+                                stopColor={color}
+                                stopOpacity={0.35}
+                              />
+                              <stop
+                                offset="95%"
+                                stopColor={color}
+                                stopOpacity={0.03}
+                              />
+                            </linearGradient>
+                          );
+                        })}
+                      </defs>
+
+                      <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                      <XAxis
+                        dataKey="timestamp"
+                        tick={{ fill: "#64748b", fontSize: 11 }}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        tick={{ fill: "#64748b", fontSize: 11 }}
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "rgba(255, 255, 255, 0.95)",
+                          border: "1px solid #e2e8f0",
+                          borderRadius: "8px",
+                          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
+                          fontSize: "12px",
+                        }}
+                      />
+                      <Legend
+                        wrapperStyle={{
+                          fontSize: "12px",
+                          paddingTop: "12px",
+                        }}
+                        iconType="circle"
+                      />
+
                       {selectedStations.map((id, idx) => {
                         const color = stationColors[idx % stationColors.length];
+                        const stationName =
+                          stationsData[id]?.nome || `Estação ${id}`;
                         return (
-                          <linearGradient
+                          <Line
                             key={id}
-                            id={`gradient-${id}`}
-                            x1="0"
-                            y1="0"
-                            x2="0"
-                            y2="1"
-                          >
-                            <stop
-                              offset="5%"
-                              stopColor={color}
-                              stopOpacity={0.35}
-                            />
-                            <stop
-                              offset="95%"
-                              stopColor={color}
-                              stopOpacity={0.03}
-                            />
-                          </linearGradient>
+                            type="monotone"
+                            dataKey={`station_${id}`}
+                            name={stationName}
+                            stroke={color}
+                            strokeWidth={2.5}
+                            dot={false}
+                            activeDot={{
+                              r: 6,
+                              strokeWidth: 2,
+                              stroke: "white",
+                            }}
+                          />
                         );
                       })}
-                    </defs>
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
 
-                    <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
-                    <XAxis
-                      dataKey="timestamp"
-                      tick={{ fill: "#64748b", fontSize: 11 }}
-                      tickLine={false}
-                    />
-                    <YAxis
-                      tick={{ fill: "#64748b", fontSize: 11 }}
-                      tickLine={false}
-                      axisLine={false}
-                    />
-                    <Tooltip
-                      contentStyle={{
-                        backgroundColor: "rgba(255, 255, 255, 0.95)",
-                        border: "1px solid #e2e8f0",
-                        borderRadius: "8px",
-                        boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-                        fontSize: "12px",
-                      }}
-                    />
-                    <Legend
-                      wrapperStyle={{
-                        fontSize: "12px",
-                        paddingTop: "12px",
-                      }}
-                      iconType="circle"
-                    />
-
-                    {selectedStations.map((id, idx) => {
-                      const color = stationColors[idx % stationColors.length];
-                      const stationName =
-                        stationsData[id]?.nome || `Estação ${id}`;
-                      return (
-                        <Line
-                          key={id}
-                          type="monotone"
-                          dataKey={`station_${id}`}
-                          name={stationName}
-                          stroke={color}
-                          strokeWidth={2.5}
-                          dot={false}
-                          activeDot={{ r: 6, strokeWidth: 2, stroke: "white" }}
-                        />
-                      );
-                    })}
-                  </LineChart>
-                </ResponsiveContainer>
+              <div className="flex flex-col gap-3 m-4 pt-10">
+                {(Object.keys(metricIcons) as Metric[]).map((m) => {
+                  const Icon = metricIcons[m];
+                  const active = metric === m;
+                  return (
+                    <button
+                      key={m}
+                      onClick={() => setMetric(m)}
+                      className={`h-10 w-10 flex items-center justify-center rounded-xl transition-all duration-200 shadow-sm ${
+                        active
+                          ? "bg-green-600 text-white shadow-md scale-105"
+                          : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+                      }`}
+                    >
+                      <Icon className="w-5 h-5" />
+                    </button>
+                  );
+                })}
               </div>
             </div>
-
-            <div className="flex flex-col gap-3 m-4 pt-5">
-              {(Object.keys(metricIcons) as Metric[]).map((m) => {
-                const Icon = metricIcons[m];
-                const active = metric === m;
-                return (
-                  <button
-                    key={m}
-                    onClick={() => setMetric(m)}
-                    className={`h-12 w-10 flex items-center justify-center rounded-xl transition-all duration-200 shadow-sm ${
-                      active
-                        ? "bg-green-600 text-white shadow-md scale-105"
-                        : "bg-slate-100 text-slate-500 hover:bg-slate-200"
-                    }`}
-                  >
-                    <Icon className="w-5 h-5" />
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </div>
 
       {/* Listagem de estações disponíveis */}
@@ -518,6 +581,25 @@ export default function DashboardIndex() {
         )}
       </div>
 
+      {openMap && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center z-[9999] p-4 md:p-10">
+          <div className="w-full h-full bg-white rounded-3xl overflow-hidden relative shadow-2xl border border-white/20">
+            <button
+              onClick={() => setOpenMap(false)}
+              className="absolute top-6 right-6 z-[10000] bg-red-500 hover:bg-red-600 text-white px-5 py-2.5 rounded-full font-bold shadow-xl transition-transform active:scale-95"
+            >
+              Fechar Mapa
+            </button>
+
+            <Map
+              altura="100%"
+              selectedStations={selectedStations}
+              onToggleEstacao={toggleStation}
+            />
+          </div>
+        </div>
+      )}
+
       {/* Modal de Edição/Criação */}
       {isModalOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
@@ -601,7 +683,9 @@ export default function DashboardIndex() {
       {showDeleteModal && stationToDelete && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-[9999]">
           <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-2">Confirmar exclusão</h2>
+            <h2 className="text-xl font-bold text-gray-900 mb-2">
+              Confirmar exclusão
+            </h2>
             <p className="text-gray-600 mb-6">
               Tem certeza que deseja excluir a estação{" "}
               <span className="font-semibold">{stationToDelete.nome}</span>?

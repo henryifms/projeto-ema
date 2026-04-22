@@ -1,11 +1,12 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaUserCircle,
-  FaSignOutAlt,
   FaChartLine,
   FaMapMarkedAlt,
   FaUsers,
   FaHistory,
+  FaBell,
+  FaRegBell,
 } from "react-icons/fa";
 import type { ReactNode } from "react";
 
@@ -76,31 +77,31 @@ export default function Layout({ children }: { children: ReactNode }) {
             );
           })}
         </nav>
-        <div className="fixed bottom-6 left-6">
-        <Link
-          to="/conta"
-          className=" w-40 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
-        >
-          <FaUserCircle className="w-10 h-10 text-green-600" />
+        <div className="fixed bottom-2 left-5 flex flex-col gap-2 justify-center border-t border-gray-300 pt-2">
+          <Link
+            to="/conta"
+            className=" w-40 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
+          >
+            <FaBell className="w-5 h-5 text-green-600" />
 
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
-              Notificações
-            </p>
-          </div>
-        </Link>
-        <Link
-          to="/conta"
-          className=" w-40 p-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
-        >
-          <FaUserCircle className="w-10 h-10 text-green-600" />
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+                Notificações
+              </p>
+            </div>
+          </Link>
+          <Link
+            to="/conta"
+            className=" w-40 px-4 py-3 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-700 flex items-center gap-3 hover:bg-gray-100 dark:hover:bg-gray-800 transition cursor-pointer"
+          >
+            <FaUserCircle className="w-5 h-5 text-green-600" />
 
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
-              {user?.nome || "Usuário"}
-            </p>
-          </div>
-        </Link>
+            <div className="flex-1 min-w-0">
+              <p className="text-sm font-semibold text-gray-800 dark:text-white truncate">
+                {user?.nome || "Usuário"}
+              </p>
+            </div>
+          </Link>
         </div>
       </aside>
 

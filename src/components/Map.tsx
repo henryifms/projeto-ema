@@ -205,7 +205,7 @@ export default function Map({
           // 🔥 CÍRCULO DASHBOARD
           if (isDashboard && isSelected) {
             L.circle(coords, {
-              radius: 500,
+              radius: 200,
               color: "#22c55e",
               fillColor: "#22c55e",
               fillOpacity: 0.15,
