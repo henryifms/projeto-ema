@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import {
   FaUserCircle,
   FaChartLine,
@@ -34,15 +34,9 @@ const menuItems: MenuItem[] = [
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
-  const navigate = useNavigate();
 
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
-
-  const handleLogout = () => {
-    localStorage.clear();
-    navigate("/login");
-  };
 
   return (
     <div className="flex flex-1 min-h-0 bg-gray-50 dark:bg-gray-950">
