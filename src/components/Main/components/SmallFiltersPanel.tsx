@@ -11,7 +11,7 @@ export function SmallFiltersPanel({
     "w-full rounded-xl border border-gray-200 bg-white px-3 py-2.5 text-sm text-gray-700 outline-none transition focus:border-green-500 focus:ring-2 focus:ring-green-100";
 
   return (
-    <section className="rounded-2xl border border-gray-100 bg-white p-5 shadow-md">
+    <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-md min-h-[700px]">
       <div className="mb-4 flex items-start justify-between gap-3">
         <div>
           <p className="text-xs font-semibold uppercase tracking-wider text-green-600">

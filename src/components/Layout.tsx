@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaUserCircle,
   FaChartLine,
@@ -34,9 +34,15 @@ const menuItems: MenuItem[] = [
 
 export default function Layout({ children }: { children: ReactNode }) {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const userStr = localStorage.getItem("user");
   const user = userStr ? JSON.parse(userStr) : null;
+
+  const handleLogout = () => {
+    localStorage.clear();
+    navigate("/login");
+  };
 
   return (
     <div className="flex flex-1 min-h-0 bg-gray-50 dark:bg-gray-950">
@@ -93,7 +99,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       </aside>
 
       <main className="flex-1 overflow-auto p-6">
-        <div className="max-w-7xl">{children}</div>
+        <div className="max-w-8xl mx-auto w-full">{children}</div>
       </main>
     </div>
   );

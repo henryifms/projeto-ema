@@ -283,17 +283,17 @@ export default function DashboardIndex() {
   }, [stationsData, selectedStations, periodo, tipo, metric]);
 
   return (
-    <div className="max-w-7xl mx-auto px-20 space-y-10">
+    <div className="w-full flex justify-center flex-col mx-auto px-65 space-y-10">
       {/* Header Dashboard */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
         </div>
         <div className="flex flex-wrap gap-3">
           <div className="flex items-center gap-1 text-sm text-gray-600 bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm">
-            <Clock className="w-4 h-4" /> {estacoes.length} estações
+            {estacoes.length} estações
           </div>
           <div className="flex items-center gap-1 text-sm px-4 py-2 rounded-xl backdrop-blur-sm bg-green-100 text-green-800">
-            <AlertCircle className="w-4 h-4" /> {ativaCount} ativas
+            {ativaCount} ativas
           </div>
           <div className="flex items-center gap-1 text-sm text-gray-600 bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm">
             {totalLeituras} leituras

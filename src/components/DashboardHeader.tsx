@@ -1,12 +1,12 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation, useParams } from "react-router-dom";
 import { FaCog, FaMoon, FaSun } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import logoIcon from "../assets/icone.png";
-import { useLocation } from "react-router-dom";
 
 export default function DashboardHeader() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { id } = useParams();
 
   const botoes = location.pathname.startsWith("/dashboard/");
 
@@ -38,16 +38,16 @@ export default function DashboardHeader() {
 
         {botoes && (
           <nav className="flex items-center gap-2 ml-34">
-            <Link to="/dashboard/:id" className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <Link to={`/dashboard/${id}`} className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
               Visão geral
             </Link>
-            <Link to="/dashboard/:id/historico" className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <Link to={`/dashboard/${id}/historico`} className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
               Histórico
             </Link>
-            <Link to="/dashboard/:id/relatorios" className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <Link to={`/dashboard/${id}/relatorios`} className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
               Relatórios
             </Link>
-            <Link to="/dashboard/:id/alertas" className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
+            <Link to={`/dashboard/${id}/alertas`} className="px-3 py-2 text-sm rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">
               Alertas
             </Link>
           </nav>

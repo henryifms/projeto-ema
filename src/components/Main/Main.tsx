@@ -13,6 +13,7 @@ import { StationInfo } from "./components/StationInfo";
 import { buildOverlaySeries } from "./utils/builders";
 import { formatNumber, formatDate } from "./utils/formatters";
 import type { MetricTab, NearestStationInfo, LogEntry } from "./types";
+import SobreEstacao from "../SobreEstacao.tsx"
 
 export default function Main() {
   const { id } = useParams();
@@ -260,19 +261,7 @@ export default function Main() {
             nearestInfo={nearestInfo}
           />
 
-          <InsightPanel
-            estacao={estacao}
-            convites={convites}
-            logs={logs}
-            activeTab={insightTab}
-            onChangeTab={setInsightTab}
-            onCreateInvite={handleCreateInvite}
-            onRequestAccess={handleRequestAccess}
-            creatingInvite={creatingInvite}
-            requestingAccess={requestingAccess}
-            accessRequestStatus={accessRequestStatus}
-            inviteError={inviteError}
-          />
+          <SobreEstacao />
         </div>
       </section>
 

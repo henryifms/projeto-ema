@@ -3,6 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
 } from "react-router-dom";
 
 // páginas
@@ -30,6 +31,18 @@ const PrivateRoute = ({ children }: any) => {
   const isAuth = !!localStorage.getItem("token");
   return isAuth ? children : <Navigate to="/login" />;
 };
+
+function DashboardLayout() {
+  return (
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-950 flex flex-col">
+      <DashboardHeader />
+
+      <Layout>
+        <Outlet />
+      </Layout>
+    </div>
+  );
+}
 
 export default function App() {
   return (
@@ -59,13 +72,19 @@ export default function App() {
           }
         />
 
-        <Route path="/dashboard/:id" element={<DashboardIndex />}>
+        <Route
+  path="/dashboard/:id"
+  element={
+    <PrivateRoute>
+      <DashboardLayout />
+    </PrivateRoute>
+  }
+>
   <Route index element={<Dashboard />} />
   <Route path="historico" element={<Historico />} />
   <Route path="relatorios" element={<Relatorios />} />
   <Route path="alertas" element={<Alertas />} />
 </Route>
-
         <Route
           path="/estacoes"
           element={

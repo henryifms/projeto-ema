@@ -194,7 +194,7 @@ export default function Estacoes() {
             <AlertCircle className="w-4 h-4" /> {ativaCount} ativas
           </div>
           <div className="flex items-center gap-1 text-sm text-gray-600 bg-white/50 px-4 py-2 rounded-xl backdrop-blur-sm">
-            📊 {totalLeituras} leituras
+            {totalLeituras} leituras
           </div>
           <button
             onClick={() => openModal()}
